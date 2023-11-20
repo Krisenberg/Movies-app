@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Movies</string>
+    <string name="lotr_1_title">The Lord of the Rings: The Fellowship of the Ring</string>
+    <string name="lotr_2_title">The Lord of the Rings: The Two Towers</string>
+    <string name="lotr_3_title">The Lord of the Rings: The Return of the King</string>
+    <string name="dummy_desc">Dummy text</string>
+</resources>
