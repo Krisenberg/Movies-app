@@ -31,7 +31,7 @@ fun MainScreen(
     navController: NavController,
     modifier: Modifier = Modifier
 ){
-    LazyColumn(contentPadding = PaddingValues(16.dp)) {
+    LazyColumn(contentPadding = PaddingValues(15.dp)) {
         val itemCount = moviesImgTitleList.size
         items(itemCount) {
             ColumnItem(
@@ -57,7 +57,7 @@ fun ColumnItem(
             .padding(10.dp)
             .wrapContentSize()
             .clickable {
-                       navController.navigate(route = "DetailsScreen/{$itemIndex}")
+                       navController.navigate(route = "DetailsScreen/$itemIndex")
             },
         colors = CardDefaults.cardColors(
             containerColor = Color.White

@@ -14,15 +14,15 @@ object ContentManager {
     )
 
     private val mapIDtoMainImage = mapOf(
-        1 to R.drawable.main_img,
+        1 to R.drawable.main_img_lotr_1,
         2 to R.drawable.main_img_lotr_2,
-        3 to R.drawable.main_img,
-        4 to R.drawable.main_img,
-        5 to R.drawable.main_img,
-        6 to R.drawable.main_img,
-        7 to R.drawable.main_img,
-        8 to R.drawable.main_img,
-        9 to R.drawable.main_img
+        3 to R.drawable.main_img_lotr_3,
+        4 to R.drawable.main_img_oppenheimer,
+        5 to R.drawable.main_img_cars,
+        6 to R.drawable.main_img_shrek_2,
+        7 to R.drawable.main_img_lotr_1,
+        8 to R.drawable.main_img_lotr_2,
+        9 to R.drawable.main_img_lotr_3
     )
 
     fun GetTitlesList(): List<Int> {
