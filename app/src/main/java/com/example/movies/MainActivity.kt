@@ -27,6 +27,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.example.movies.screens.DetailsScreen
+import com.example.movies.screens.MainScreen
 import com.example.movies.ui.theme.MoviesTheme
 
 class MainActivity : ComponentActivity() {
@@ -35,6 +42,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mainViewModel = ViewModelProvider(this)[MainViewModel::class.java]
+        val contentList = ContentManager.GetMainImagesList().zip(ContentManager.GetTitlesList())
         setContent {
             MoviesTheme {
                 // A surface container using the 'background' color from the theme
@@ -42,7 +50,27 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    MoviesList(mainViewModel.GetMoviesList())
+                    val navController = rememberNavController()
+                    NavHost(
+                        navController = navController,
+                        startDestination = "MainScreen") {
+                        composable(route = "MainScreen") {
+                            MainScreen(moviesImgTitleList = contentList, navController)
+                        }
+                        composable(route = "DetailsScreen/{index}",
+                            arguments = listOf(
+                                navArgument(name = "index"){
+                                    type = NavType.IntType
+                                }
+                            )
+                        ){
+                            index ->
+                                DetailsScreen(
+                                    moviesImgTitleList = contentList,
+                                    itemIndex = index.arguments?.getInt("index")
+                                )
+                        }
+                    }
                 }
             }
         }
@@ -59,27 +87,40 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 
 //@Composable
 //fun RowItem(imageID: Int, titleID: Int) {
-//    Row {
+//    Row(
+//        verticalAlignment = Alignment.CenterVertically,
+//        modifier = Modifier
+//            .padding(8.dp)
+//            .clip(shape = RoundedCornerShape(16.dp))
+//            .background(MaterialTheme.colorScheme.surface)
+//    ) {
 //        Image(
 //            painter = painterResource(id = imageID),
 //            contentDescription = stringResource(id = R.string.dummy_desc),
 //            contentScale = ContentScale.Fit,
 //            modifier = Modifier
-//                .size(150.dp)
+//                .requiredSize(width = 192.dp, height = 108.dp)
 //        )
 //        Text(
-//            text = stringResource(id = titleID)
+//            text = stringResource(id = titleID),
+//            color = MaterialTheme.colorScheme.onSurface
 //        )
 //    }
 //}
 //
 //@Composable
 //fun MoviesList(dataList: List<Pair<Int, Int>>, modifier: Modifier = Modifier) {
-//    Surface (
-//        color = MaterialTheme.colorScheme.primary,
-//        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
-//    ){
-//        LazyColumn {
+//    Surface(
+//        color = MaterialTheme.colorScheme.primary
+//        //modifier = modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+//    ) {
+//        LazyColumn(
+//            modifier = Modifier
+//                .padding(
+//                    start = 16.dp,
+//                    end = 16.dp
+//                )
+//        ) {
 //            items(dataList) { tuple ->
 //                RowItem(imageID = tuple.second, titleID = tuple.first)
 //            }
@@ -87,55 +128,12 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 //    }
 //}
 
-@Composable
-fun RowItem(imageID: Int, titleID: Int) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .padding(8.dp)
-            .clip(shape = RoundedCornerShape(16.dp))
-            .background(MaterialTheme.colorScheme.surface)
-    ) {
-        Image(
-            painter = painterResource(id = imageID),
-            contentDescription = stringResource(id = R.string.dummy_desc),
-            contentScale = ContentScale.Fit,
-            modifier = Modifier
-                .requiredSize(width = 192.dp, height = 108.dp)
-                .padding(8.dp)
-        )
-        Text(
-            text = stringResource(id = titleID),
-            color = MaterialTheme.colorScheme.onSurface
-        )
-    }
-}
-
-@Composable
-fun MoviesList(dataList: List<Pair<Int, Int>>, modifier: Modifier = Modifier) {
-    Surface(
-        color = MaterialTheme.colorScheme.primary
-        //modifier = modifier.padding(horizontal = 8.dp, vertical = 4.dp)
-    ) {
-        LazyColumn(
-            modifier = Modifier
-                .padding(
-                    start = 16.dp,
-                    end = 16.dp
-                )
-        ) {
-            items(dataList) { tuple ->
-                RowItem(imageID = tuple.second, titleID = tuple.first)
-            }
-        }
-    }
-}
-
 @Preview(showBackground = true)
 @Composable
 fun MoviesListPreview() {
-    MoviesTheme {
-//        Greeting("Android")
-        MoviesList(MainViewModel().GetMoviesList())
-    }
+//    MoviesTheme {
+////        Greeting("Android")
+//        MoviesList(MainViewModel().GetMoviesList())
+//    }
+    MainScreen(moviesImgTitleList = ContentManager.GetMainImagesList().zip(ContentManager.GetTitlesList()), navController = rememberNavController())
 }
