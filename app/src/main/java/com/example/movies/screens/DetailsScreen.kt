@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -60,7 +61,7 @@ fun DetailsScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    Text("Details")
+                    Text(text = stringResource(id = movieDetails.titleAbbrev))
                 },
                 navigationIcon = {
                     IconButton(onClick = {navController.navigate(route = "MainScreen")}) {
@@ -225,7 +226,7 @@ fun ZoomedImageDialog(
     ) {
         Card(
             modifier = Modifier
-                .fillMaxWidth()
+                .wrapContentWidth()
                 .padding(2.dp),
             shape = RoundedCornerShape(4.dp),
         ) {

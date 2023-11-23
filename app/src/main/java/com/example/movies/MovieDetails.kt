@@ -3,6 +3,7 @@ package com.example.movies
 data class MovieDetails(
     val mainImage: Int,
     val title: Int,
+    val titleAbbrev: Int,
     val description: String,
     val details: List<String>,
     val scenes: List<Int>,

@@ -3,5 +3,16 @@
     <string name="lotr_1_title">The Lord of the Rings: The Fellowship of the Ring</string>
     <string name="lotr_2_title">The Lord of the Rings: The Two Towers</string>
     <string name="lotr_3_title">The Lord of the Rings: The Return of the King</string>
+    <string name="oppenheimer_title">Oppenheimer</string>
+    <string name="cars_title">Cars</string>
+    <string name="shrek_2_title">Shrek 2</string>
+    <string name="casino_royale_title">James Bond: Casino Royale</string>
+    <string name="star_wars_title">Star Wars: Episode IV - A New Hope</string>
+    <string name="gladiator_title">Gladiator</string>
+    <string name="lotr_1_abbrev">The Lord of the Rings 1</string>
+    <string name="lotr_2_abbrev">The Lord of the Rings 2</string>
+    <string name="lotr_3_abbrev">The Lord of the Rings 3</string>
+    <string name="star_wars_abbrev">Star Wars IV: New Hope</string>
     <string name="dummy_desc">Dummy text</string>
+    Martin Campbell
 </resources>
