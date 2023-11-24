@@ -35,12 +35,13 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val navController = rememberNavController()
+                    val windowInfo = rememberWindowInfo()
 
                     NavHost(
                         navController = navController,
                         startDestination = "MainScreen") {
                             composable(route = "MainScreen") {
-                                MainScreen(moviesImgTitleList = mainViewModel.getItemsZippedList(), navController)
+                                MainScreen(moviesImgTitleList = mainViewModel.getMoviesImagesTitles(), navController)
                             }
                             composable(route = "DetailsScreen/{index}",
                                 arguments = listOf(
@@ -56,7 +57,8 @@ class MainActivity : ComponentActivity() {
                                 }
                                 DetailsScreen(
                                     movieDetails = mainViewModel.getMovieDetailsObject(itemIndex),
-                                    navController = navController
+                                    navController = navController,
+                                    windowInfo = windowInfo
                                 )
                         }
                     }
@@ -73,5 +75,7 @@ fun MoviesListPreview() {
 ////        Greeting("Android")
 //        MoviesList(MainViewModel().GetMoviesList())
 //    }
-    MainScreen(moviesImgTitleList = ContentManager.getMainImagesList().zip(ContentManager.getTitlesList()), navController = rememberNavController())
+    val imagesList = ContentManager.getDatabaseData().map { it.mainImage }
+    val titlesList = ContentManager.getDatabaseData().map { it.title }
+    MainScreen(moviesImgTitleList = imagesList.zip(titlesList), navController = rememberNavController())
 }

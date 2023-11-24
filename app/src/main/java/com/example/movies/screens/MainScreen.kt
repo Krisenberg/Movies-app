@@ -19,7 +19,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -54,7 +53,7 @@ fun ColumnItem(
 ){
     Card(
         modifier
-            .padding(10.dp)
+            .padding(8.dp)
             .wrapContentSize()
             .clickable {
                        navController.navigate(route = "DetailsScreen/$itemIndex")
@@ -77,9 +76,9 @@ fun ColumnItem(
             )
             Text(
                 text = stringResource(id = movieTitleID),
-                fontSize = 17.sp,
+                fontSize = 15.sp,
                 modifier = Modifier
-                    .padding(8.dp)
+                    .padding(6.dp)
             )
         }
     }

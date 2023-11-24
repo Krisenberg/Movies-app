@@ -4,27 +4,21 @@ import androidx.lifecycle.ViewModel
 
 class MainViewModel : ViewModel(){
 
-    private lateinit var imagesList: List<Int>
-    private lateinit var titlesList: List<Int>
+//    private lateinit var imagesList: List<Int>
+//    private lateinit var titlesList: List<Int>
+    private lateinit var moviesData: List<MovieDetails>
 
     fun init(){
-        imagesList = ContentManager.getMainImagesList()
-        titlesList = ContentManager.getTitlesList()
+        moviesData = ContentManager.getDatabaseData()
     }
 
-    fun getItemsZippedList(): List<Pair<Int, Int>> {
+    fun getMoviesImagesTitles(): List<Pair<Int, Int>> {
+        val imagesList = moviesData.map { it.mainImage }
+        val titlesList = moviesData.map { it.title }
         return imagesList.zip(titlesList)
     }
 
     fun getMovieDetailsObject(iD: Int): MovieDetails {
-        return MovieDetails(
-            mainImage = imagesList[iD],
-            title = titlesList[iD],
-            titleAbbrev = ContentManager.getAbbrev(iD),
-            description = ContentManager.getDescription(iD),
-            details = ContentManager.getDetails(iD),
-            scenes = ContentManager.getScenesList(iD),
-            actors = ContentManager.getActorsList(iD)
-        )
+         return moviesData[iD]
     }
 }

@@ -4,8 +4,8 @@ data class MovieDetails(
     val mainImage: Int,
     val title: Int,
     val titleAbbrev: Int,
-    val description: String,
-    val details: List<String>,
+    val description: Int,
+    val details: List<Int>,
     val scenes: List<Int>,
-    val actors: List<String>
+    val actors: List<Int>
 )
