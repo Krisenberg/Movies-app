@@ -11,7 +11,7 @@ class MainViewModel : ViewModel(){
 
     fun getMoviesImagesTitles(): List<Pair<Int, Int>> {
         val imagesList = moviesData.map { it.mainImage }
-        val titlesList = moviesData.map { it.title }
+        val titlesList = moviesData.map { it.titleAbbrev }
         return imagesList.zip(titlesList)
     }
 
