@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Movies</string>
+
     <string name="lotr_1_title">The Lord of the Rings: The Fellowship of the Ring</string>
     <string name="lotr_1_abbrev">The Lord of the Rings 1</string>
     <string name="lotr_1_description">A meek Hobbit from the Shire and eight companions set out on a journey to destroy the powerful One Ring and save Middle-earth from the Dark Lord Sauron.</string>
@@ -18,11 +19,97 @@
     <string name="lotr_1_actor_10">Cate Blanchett [Galadriel]</string>
     <string name="lotr_1_actor_11">Ian Holm [Bilbo]</string>
     <string name="lotr_1_actor_12">Christopher Lee [Saruman]</string>
+
     <string name="lotr_2_title">The Lord of the Rings: The Two Towers</string>
+    <string name="lotr_2_abbrev">The Lord of the Rings 2</string>
+    <string name="lotr_2_description">While Frodo and Sam edge closer to Mordor with the help of the shifty Gollum, the divided fellowship makes a stand against Sauron\'s new ally, Saruman, and his hordes of Isengard.</string>
+    <string name="lotr_2_detil_1">Directed by: Peter Jackson</string>
+    <string name="lotr_2_detil_2">Time: 2h 59m</string>
+    <string name="lotr_2_detil_3">Released: 2002</string>
+    <string name="lotr_2_actor_1">Elijah Wood [Frodo]</string>
+    <string name="lotr_2_actor_2">Ian McKellen [Gandalf]</string>
+    <string name="lotr_2_actor_3">Viggo Mortensen [Aragorn]</string>
+    <string name="lotr_2_actor_4">Orlando Bloom [Legolas]</string>
+    <string name="lotr_2_actor_5">Bruce Allpress [Aldor]</string>
+    <string name="lotr_2_actor_6">Sean Astin [Sam]</string>
+    <string name="lotr_2_actor_7">John Bach [Madril]</string>
+    <string name="lotr_2_actor_8">Sala Baker [Man Flesh Uruk]</string>
+    <string name="lotr_2_actor_9">Cate Blanchett [Galadriel]</string>
+    <string name="lotr_2_actor_10">Andy Serkis [Golum]</string>
+    <string name="lotr_2_actor_11">Billy Boyd [Pippin]</string>
+    <string name="lotr_2_actor_12">Christopher Lee [Saruman]</string>
+
     <string name="lotr_3_title">The Lord of the Rings: The Return of the King</string>
+    <string name="lotr_3_abbrev">The Lord of the Rings 3</string>
+    <string name="lotr_3_description">Gandalf and Aragorn lead the World of Men against Sauron\'s army to draw his gaze from Frodo and Sam as they approach Mount Doom with the One Ring.</string>
+    <string name="lotr_3_detil_1">Directed by: Peter Jackson</string>
+    <string name="lotr_3_detil_2">Time: 3h 21m</string>
+    <string name="lotr_3_detil_3">Released: 2003</string>
+    <string name="lotr_3_actor_1">Elijah Wood [Frodo]</string>
+    <string name="lotr_3_actor_2">Viggo Mortensen [Aragorn]</string>
+    <string name="lotr_3_actor_3">Ian McKellen [Gandalf]</string>
+    <string name="lotr_3_actor_4">Orlando Bloom [Legolas]</string>
+    <string name="lotr_3_actor_5">Sean Bean [Boromir]</string>
+    <string name="lotr_3_actor_6">Sean Astin [Sam]</string>
+    <string name="lotr_3_actor_7">John Bach [Madril]</string>
+    <string name="lotr_3_actor_8">Alistair Browning [Damrod]</string>
+    <string name="lotr_3_actor_9">Cate Blanchett [Galadriel]</string>
+    <string name="lotr_3_actor_10">Bernard Hill [Theoden]</string>
+    <string name="lotr_3_actor_11">Billy Boyd [Pippin]</string>
+    <string name="lotr_3_actor_12">Christopher Lee [Saruman]</string>
+
     <string name="oppenheimer_title">Oppenheimer</string>
+    <string name="oppenheimer_description">The story of American scientist, J. Robert Oppenheimer, and his role in the development of the atomic bomb.</string>
+    <string name="oppenheimer_detil_1">Directed by: Christopher Nolan</string>
+    <string name="oppenheimer_detil_2">Time: 3h</string>
+    <string name="oppenheimer_detil_3">Released: 2023</string>
+    <string name="oppenheimer_actor_1">Cillian Murphy [J. Robert Oppenheimer]</string>
+    <string name="oppenheimer_actor_2">Emily Blunt [Kitty Oppenheimer]</string>
+    <string name="oppenheimer_actor_3">Matt Damon [Leslie Groves]</string>
+    <string name="oppenheimer_actor_4">Robert Downey Jr. [Lewis Strauss]</string>
+    <string name="oppenheimer_actor_5">Alden Ehrenreich [Senate Aide]</string>
+    <string name="oppenheimer_actor_6">Scott Grimes [Counsel]</string>
+    <string name="oppenheimer_actor_7">Jason Clarke [Roger Robb]</string>
+    <string name="oppenheimer_actor_8">Kurt Koehler [Thomas Morgan]</string>
+    <string name="oppenheimer_actor_9">Tony Goldwyn [Gordon Gray]</string>
+    <string name="oppenheimer_actor_10">John Gowans [Ward Evans]</string>
+    <string name="oppenheimer_actor_11">Macon Blair [Lloyd Garrison]</string>
+    <string name="oppenheimer_actor_12">James D\'Arcy [Patrick Blackett]</string>
+
     <string name="cars_title">Cars</string>
+    <string name="cars_description">On the way to the biggest race of his life, a hotshot rookie race car gets stranded in a rundown town and learns that winning isn\'t everything in life.</string>
+    <string name="cars_detil_1">Directed by: John Lasseter, Joe Ranft</string>
+    <string name="cars_detil_2">Time: 1h 57m</string>
+    <string name="cars_detil_3">Released: 2006</string>
+    <string name="cars_actor_1">Owen Wilson [Lightning McQueen(voice)]</string>
+    <string name="cars_actor_2">Bonnie Hunt [Sally Carrera(voice)]</string>
+    <string name="cars_actor_3">Paul Newman [Doc Hudson(voice)]</string>
+    <string name="cars_actor_4">Larry the Cable Guy [Mater(voice)]</string>
+    <string name="cars_actor_5">Cheech Marin [Ramone(voice)]</string>
+    <string name="cars_actor_6">Tony Shalhoub [Luigi(voice)]</string>
+    <string name="cars_actor_7">Guido Quaroni [Guido(voice)]</string>
+    <string name="cars_actor_8">Jenifer Lewis [Flo(voice)]</string>
+    <string name="cars_actor_9">Paul Dooley [Sarge(voice)]</string>
+    <string name="cars_actor_10">Michael Wallis [Sheriff(voice)]</string>
+
     <string name="shrek_2_title">Shrek 2</string>
+    <string name="shrek_2_description">Shrek and Fiona travel to the Kingdom of Far Far Away, where Fiona\'s parents are King and Queen, to celebrate their marriage. When they arrive, they find they are not as welcome as they thought they would be.</string>
+    <string name="shrek_2_detil_1">Directed by: Andrew Adamson, Kelly Asbury, Conrad Vernon</string>
+    <string name="shrek_2_detil_2">Time: 1h 33m</string>
+    <string name="shrek_2_detil_3">Released: 2004</string>
+    <string name="shrek_2_actor_1">Mike Myers [Shrek(voice)]</string>
+    <string name="shrek_2_actor_2">Eddie Murphy [Donkey(voice)]</string>
+    <string name="shrek_2_actor_3">Cameron Diaz [Princess Fiona(voice)]</string>
+    <string name="shrek_2_actor_4">Julie Andrews [Queen(voice)]</string>
+    <string name="shrek_2_actor_5">Antonio Banderas [Puss In Boots(voice)]</string>
+    <string name="shrek_2_actor_6">John Cleese [King(voice)]</string>
+    <string name="shrek_2_actor_7">Rupert Everett [Prince Charming(voice)]</string>
+    <string name="shrek_2_actor_8">Jennifer Saunders [Fairy Godmother(voice)]</string>
+    <string name="shrek_2_actor_9">Aron Warner [Wolf(voice)]</string>
+    <string name="shrek_2_actor_10">Cody Cameron [Pinocchio(voice)]</string>
+    <string name="shrek_2_actor_11">Conrad Vernon [Gingerbread Man(voice)]</string>
+    <string name="shrek_2_actor_12">Mark Moseley [Mirror(voice)]</string>
+
     <string name="casino_royale_title">James Bond: Casino Royale</string>
     <string name="casino_royale_description">After earning 00 status and a licence to kill, secret agent James Bond sets out on his first mission as 007. Bond must defeat a private banker funding terrorists in a high-stakes game of poker at Casino Royale, Montenegro.</string>
     <string name="casino_royale_detil_1">Directed by: Martin Campbell</string>
@@ -38,14 +125,46 @@
     <string name="casino_royale_actor_8">Simon Abkarian [Alex Dimitrios]</string>
     <string name="casino_royale_actor_9">Isaach De Bankolé [Steven Obanno]</string>
     <string name="casino_royale_actor_10">Jesper Christensen [Mr. White]</string>
+
     <string name="star_wars_title">Star Wars: Episode IV - A New Hope</string>
-    <string name="gladiator_title">Gladiator</string>
-    <string name="lotr_2_abbrev">The Lord of the Rings 2</string>
-    <string name="lotr_3_abbrev">The Lord of the Rings 3</string>
     <string name="star_wars_abbrev">Star Wars IV: New Hope</string>
+    <string name="star_wars_description">Luke Skywalker joins forces with a Jedi Knight, a cocky pilot, a Wookiee and two droids to save the galaxy from the Empire\'s world-destroying battle station, while also attempting to rescue Princess Leia from the mysterious Darth Vader.</string>
+    <string name="star_wars_detil_1">Directed by: George Lucas</string>
+    <string name="star_wars_detil_2">Time: 2h 1m</string>
+    <string name="star_wars_detil_3">Released: 1977</string>
+    <string name="star_wars_actor_1">Mark Hamill [Luke Skywalker]</string>
+    <string name="star_wars_actor_2">Harrison Ford [Han Solo]</string>
+    <string name="star_wars_actor_3">Carrie Fisher [Princess Leia Organa]</string>
+    <string name="star_wars_actor_4">Alec Guinness [Ben Obi-Wan Kenobi]</string>
+    <string name="star_wars_actor_5">Peter Cushing [Grand Moff Tarkin]</string>
+    <string name="star_wars_actor_6">Anthony Daniels [C-3PO]</string>
+    <string name="star_wars_actor_7">Kenny Baker [R2-D2]</string>
+    <string name="star_wars_actor_8">Peter Mayhew [Chewbacca]</string>
+    <string name="star_wars_actor_9">David Prowse [Darth Vader]</string>
+    <string name="star_wars_actor_10">Phil Brown [Uncle Owen]</string>
+
+    <string name="gladiator_title">Gladiator</string>
+    <string name="gladiator_description">A former Roman General sets out to exact vengeance against the corrupt emperor who murdered his family and sent him into slavery.</string>
+    <string name="gladiator_detil_1">Directed by: Ridley Scott</string>
+    <string name="gladiator_detil_2">Time: 2h 35m</string>
+    <string name="gladiator_detil_3">Released: 2000</string>
+    <string name="gladiator_actor_1">Russell Crowe [Maximus]</string>
+    <string name="gladiator_actor_2">Joaquin Phoenix [Commodus]</string>
+    <string name="gladiator_actor_3">Connie Nielsen [Lucilla]</string>
+    <string name="gladiator_actor_4">Oliver Reed [Proximo]</string>
+    <string name="gladiator_actor_5">Richard Harris [Marcus Aurelius]</string>
+    <string name="gladiator_actor_6">Derek Jacobi [Gracchus]</string>
+    <string name="gladiator_actor_7">Djimon Hounsou [Juba]</string>
+    <string name="gladiator_actor_8">David Schofield [Falco]</string>
+    <string name="gladiator_actor_9">John Shrapnel [Gaius]</string>
+    <string name="gladiator_actor_10">Tomas Arana [Quintus]</string>
+    <string name="gladiator_actor_11">David Hemmings [Cassius]</string>
+    <string name="gladiator_actor_12">Tommy Flanagan [Cicero]</string>
+
     <string name="dummy_desc">Dummy text</string>
     <string name="description_header">Brief description</string>
     <string name="scenes_button">Scenes</string>
     <string name="actors_button">Actors</string>
+    <string name="list_header">List of the movies</string>
     Martin Campbell
 </resources>

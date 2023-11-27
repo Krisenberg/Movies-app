@@ -9,10 +9,13 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
@@ -223,7 +226,8 @@ fun DetailsScreen(
         if (showDialog) {
             ZoomedImageDialog(
                 imageRes = showDialogImg,
-                onDismissRequest = { showDialog = false }
+                onDismissRequest = { showDialog = false },
+                windowInfo = windowInfo
             )
         }
 
@@ -278,10 +282,11 @@ fun DescriptionBox(
                 text = stringResource(id = R.string.description_header),
                 textAlign = TextAlign.Left,
                 fontStyle = FontStyle.Italic,
-                modifier = modifier.padding(bottom = 30.dp)
+                modifier = modifier.padding(bottom = 20.dp)
             )
             Text(
                 text = stringResource(id = descriptionID).substring(0,40) + "...",
+                fontSize = 14.sp,
                 textAlign = TextAlign.Justify
             )
         }
@@ -344,12 +349,30 @@ fun ActorsList(
             .padding(start = 20.dp, top = 4.dp, end = 20.dp, bottom = 8.dp)
     ) {
         actorsList.forEach { actorData ->
-            Text(
-                text = "\u2022" + stringResource(id = actorData),
-                fontSize = 20.sp,
-                color = colorResource(id = R.color.gray),
+            val stringData = stringResource(id = actorData)
+
+            val openBracketIndex = stringData.indexOf('[')
+            val closeBracketIndex = stringData.indexOf(']')
+
+            val realName = if (openBracketIndex != -1) stringData.substring(0, openBracketIndex) else stringData
+            val movieName = if (openBracketIndex != -1 && closeBracketIndex != -1 && closeBracketIndex > openBracketIndex)
+                stringData.substring(openBracketIndex + 1, closeBracketIndex) else ""
+
+            Column (
                 modifier = Modifier.padding(bottom = 8.dp)
-            )
+            ){
+                Text(
+                    text = "\u2022" + realName,
+                    fontSize = 20.sp,
+                    color = colorResource(id = R.color.black)
+                )
+                Text(
+                    text = "[ $movieName ]",
+                    fontSize = 16.sp,
+                    color = colorResource(id = R.color.gray),
+                    modifier = Modifier.padding(start = 8.dp)
+                )
+            }
         }
     }
 }
@@ -392,26 +415,94 @@ fun NonlazyGrid(
 @Composable
 fun ZoomedImageDialog(
     imageRes: Int,
-    onDismissRequest: () -> Unit
+    onDismissRequest: () -> Unit,
+    windowInfo: WindowInfo
 ) {
-    Dialog(
-        onDismissRequest = { onDismissRequest() }
-    ) {
-        Card(
+    Dialog( onDismissRequest = { onDismissRequest() } )
+    {
+        Image(
+            painter = painterResource(id = imageRes),
+            contentDescription = null,
             modifier = Modifier
-                .wrapContentWidth()
-                .padding(2.dp),
-            shape = RoundedCornerShape(4.dp),
-        ) {
-            Image(
-                painter = painterResource(id = imageRes),
-                contentDescription = null,
-                modifier = Modifier
-                    .clip(RoundedCornerShape(4.dp)),
-                contentScale = ContentScale.Fit
-            )
-        }
+                .clip(RoundedCornerShape(6.dp))
+                .fillMaxWidth(),
+            contentScale = ContentScale.FillWidth)
     }
+//    Box (
+//        modifier = Modifier
+//            .width(500.dp)
+//    ) {
+//        Dialog( onDismissRequest = { onDismissRequest() } )
+//        {
+//            Image(
+//                painter = painterResource(id = imageRes),
+//                contentDescription = null,
+//                modifier = Modifier
+//                    .clip(RoundedCornerShape(6.dp))
+//                    .fillMaxWidth(),
+//                contentScale = ContentScale.FillWidth)
+//        }
+//    }
+//    Dialog(
+//        onDismissRequest = { onDismissRequest() },
+//        content = {
+//            Box (
+//            modifier = Modifier
+//                .fillMaxSize()
+//            ) {
+//                Image(
+//                    painter = painterResource(id = imageRes),
+//                    contentDescription = null,
+//                    modifier = Modifier
+//                        .clip(RoundedCornerShape(6.dp))
+//                        .fillMaxSize(),
+//                    contentScale = ContentScale.Fit
+//                )
+//            }
+//        })
+//    ) {
+////        Card(
+////            modifier = Modifier
+//////                .wrapContentWidth()
+////                .fillMaxWidth()
+////                //.aspectRatio(1f)
+//////                .wrapContentHeight()
+////                .padding(2.dp),
+////            shape = RoundedCornerShape(4.dp),
+////        ) {
+////            Image(
+////                painter = painterResource(id = imageRes),
+////                contentDescription = null,
+////                modifier = Modifier
+////                    .clip(RoundedCornerShape(6.dp))
+////                    .fillMaxWidth(), // Maintain aspect ratio// Center the image within the Box
+////                contentScale = ContentScale.FillWidth // Fit the image without cropping
+////            )
+////        }
+//        Box (
+//            modifier = Modifier
+//                .fillMaxSize()
+//        ) {
+//            Image(
+//                painter = painterResource(id = imageRes),
+//                contentDescription = null,
+//                modifier = Modifier
+//                    .clip(RoundedCornerShape(6.dp))
+//                    .fillMaxSize(),
+//                //contentScale = ContentScale.FillHeight
+//            )
+//        }
+////        val horizontalPadding = 2.dp
+////        Image(
+////            painter = painterResource(id = imageRes),
+////            contentDescription = null,
+////            modifier = Modifier
+////                .clip(RoundedCornerShape(6.dp))
+////                .width(windowInfo.screenWidth - (horizontalPadding * 2))
+////                .wrapContentHeight(),
+////            //contentScale = ContentScale.FillHeight
+////        )
+//    }
 }
 
 @Composable
