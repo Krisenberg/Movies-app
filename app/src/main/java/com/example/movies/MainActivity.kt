@@ -39,27 +39,28 @@ class MainActivity : ComponentActivity() {
 
                     NavHost(
                         navController = navController,
-                        startDestination = "MainScreen") {
-                            composable(route = "MainScreen") {
-                                MainScreen(moviesImgTitleList = mainViewModel.getMoviesImagesTitles(), navController)
-                            }
-                            composable(route = "DetailsScreen/{index}",
-                                arguments = listOf(
-                                    navArgument(name = "index"){
-                                        type = NavType.IntType
-                                    }
-                                )
-                            ){
-                                    index ->
-                                var itemIndex = index.arguments?.getInt("index")
-                                if (itemIndex == null){
-                                    itemIndex = 0
+                        startDestination = "MainScreen"
+                    ) {
+                        composable(route = "MainScreen") {
+                            MainScreen(moviesImgTitleList = mainViewModel.getMoviesImagesTitles(), navController)
+                        }
+                        composable(route = "DetailsScreen/{index}",
+                            arguments = listOf(
+                                navArgument(name = "index"){
+                                    type = NavType.IntType
                                 }
-                                DetailsScreen(
-                                    movieDetails = mainViewModel.getMovieDetailsObject(itemIndex),
-                                    navController = navController,
-                                    windowInfo = windowInfo
-                                )
+                            )
+                        ){
+                                index ->
+                            var itemIndex = index.arguments?.getInt("index")
+                            if (itemIndex == null){
+                                itemIndex = 0
+                            }
+                            DetailsScreen(
+                                movieDetails = mainViewModel.getMovieDetailsObject(itemIndex),
+                                navController = navController,
+                                windowInfo = windowInfo
+                            )
                         }
                     }
                 }
@@ -71,10 +72,6 @@ class MainActivity : ComponentActivity() {
 @Preview(showBackground = true)
 @Composable
 fun MoviesListPreview() {
-//    MoviesTheme {
-////        Greeting("Android")
-//        MoviesList(MainViewModel().GetMoviesList())
-//    }
     val imagesList = ContentManager.getDatabaseData().map { it.mainImage }
     val titlesList = ContentManager.getDatabaseData().map { it.title }
     MainScreen(moviesImgTitleList = imagesList.zip(titlesList), navController = rememberNavController())

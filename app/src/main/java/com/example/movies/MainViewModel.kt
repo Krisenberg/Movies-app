@@ -4,10 +4,7 @@ import androidx.lifecycle.ViewModel
 
 class MainViewModel : ViewModel(){
 
-//    private lateinit var imagesList: List<Int>
-//    private lateinit var titlesList: List<Int>
     private lateinit var moviesData: List<MovieDetails>
-
     fun init(){
         moviesData = ContentManager.getDatabaseData()
     }

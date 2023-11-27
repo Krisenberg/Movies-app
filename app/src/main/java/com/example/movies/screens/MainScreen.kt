@@ -62,17 +62,6 @@ fun MainScreen(
             }
         }
     }
-//    LazyColumn(contentPadding = PaddingValues(15.dp)) {
-//        val itemCount = moviesImgTitleList.size
-//        items(itemCount) {
-//            ColumnItem(
-//                movieImgID = moviesImgTitleList[it].first,
-//                movieTitleID = moviesImgTitleList[it].second,
-//                itemIndex = it,
-//                navController = navController,
-//                modifier = modifier)
-//        }
-//    }
 }
 
 @Composable
@@ -104,13 +93,14 @@ fun ColumnItem(
                 painter = painterResource(id = movieImgID),
                 contentDescription = stringResource(id = R.string.dummy_desc),
                 modifier
-                    .size(width = 172.dp, height = 97.dp)
+                    .fillMaxWidth(0.4f)
+                    //.size(width = 172.dp, height = 97.dp)
             )
             Text(
                 text = stringResource(id = movieTitleID),
                 fontSize = 15.sp,
                 modifier = Modifier
-                    .padding(6.dp)
+                    .padding(4.dp)
             )
         }
     }

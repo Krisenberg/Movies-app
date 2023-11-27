@@ -14,15 +14,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -45,7 +43,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -98,6 +100,8 @@ fun DetailsScreen(
                 Row(
                     modifier
                         .fillMaxWidth()
+                        //.height(110.dp)
+                        .wrapContentHeight()
                         .padding(start = 12.dp),
                 ){
                     MainImgItem(
@@ -141,7 +145,8 @@ fun DetailsScreen(
                     onClickActorsDialog = { newValue -> showActors = newValue },
                     backgroundColor = buttonScenesBackgroundColor,
                     textID = R.string.scenes_button,
-                    widthFraction = 0.5f
+                    widthFraction = 0.5f,
+                    sideIsLeft = true
                 )
                 ChooseButton(
                     scenesTrigger = false,
@@ -150,7 +155,8 @@ fun DetailsScreen(
                     onClickActorsDialog = { newValue -> showActors = newValue },
                     backgroundColor = buttonActorsBackgroundColor,
                     textID = R.string.actors_button,
-                    widthFraction = 1.0f
+                    widthFraction = 1.0f,
+                    sideIsLeft = false
                 )
             }
             Box (
@@ -177,57 +183,11 @@ fun DetailsScreen(
                 }
             }
         }
-//        Row(
-//            modifier
-//                .fillMaxWidth()
-//                .padding(start = 8.dp, top = 12.dp, end = 8.dp, bottom = 12.dp),
-//        ) {
-//            val buttonScenesBackgroundColor = if (showScenes) R.color.pastel_pink else R.color.white
-//            val buttonActorsBackgroundColor = if (showActors) R.color.pastel_pink else R.color.white
-//            ChooseButton(
-//                scenesTrigger = true,
-//                actorsTrigger = false,
-//                onClickScenesDialog = { newValue -> showScenes = newValue },
-//                onClickActorsDialog = { newValue -> showActors = newValue },
-//                backgroundColor = buttonScenesBackgroundColor
-//            )
-//            ChooseButton(
-//                scenesTrigger = false,
-//                actorsTrigger = true,
-//                onClickScenesDialog = { newValue -> showScenes = newValue },
-//                onClickActorsDialog = { newValue -> showActors = newValue },
-//                backgroundColor = buttonActorsBackgroundColor
-//            )
-//        }
-//        Box (
-//            modifier = modifier
-//                .fillMaxWidth()
-//                .padding(start = 8.dp, end = 8.dp)
-//        ){
-//            if (showScenes) {
-//                NonlazyGrid(
-//                    columns = 3,
-//                    itemCount = movieDetails.scenes.size,
-//                    modifier = Modifier
-//                        .padding(bottom = 16.dp)
-//                ) {
-//                    PhotoItem(
-//                        photo = movieDetails.scenes[it],
-//                        onShowDialogChange = { newValue -> showDialog = newValue },
-//                        onShowDialogImgChange = { newValue -> showDialogImg = newValue }
-//                    )
-//                }
-//            }
-//            if (showActors) {
-//                ActorsList(actorsList = movieDetails.actors)
-//            }
-//        }
 
         if (showDialog) {
             ZoomedImageDialog(
                 imageRes = showDialogImg,
-                onDismissRequest = { showDialog = false },
-                windowInfo = windowInfo
+                onDismissRequest = { showDialog = false }
             )
         }
 
@@ -251,6 +211,7 @@ fun MainImgItem(
         contentDescription = stringResource(id = R.string.dummy_desc),
         modifier = Modifier
             .fillMaxWidth(0.475f)
+            //.fillMaxHeight()
             .clip(RoundedCornerShape(4.dp))
             .clickable {
                 onShowDialogChange(true)
@@ -267,9 +228,9 @@ fun DescriptionBox(
 ){
     Box(
         modifier
-            .fillMaxWidth()
-            .padding(start = 12.dp, end = 12.dp)
-            .height(102.dp)
+//            .fillMaxWidth()
+            .fillMaxSize()
+            .padding(start = 8.dp, end = 8.dp)
             .clip(RoundedCornerShape(4.dp))
             .background(colorResource(id = R.color.pink_gray))
             .clickable { onShowDialogTxtChange(true) }
@@ -282,12 +243,13 @@ fun DescriptionBox(
                 text = stringResource(id = R.string.description_header),
                 textAlign = TextAlign.Left,
                 fontStyle = FontStyle.Italic,
-                modifier = modifier.padding(bottom = 20.dp)
+                modifier = modifier.padding(top = 5.dp, start = 5.dp, bottom = 15.dp)
             )
             Text(
                 text = stringResource(id = descriptionID).substring(0,40) + "...",
                 fontSize = 14.sp,
-                textAlign = TextAlign.Justify
+                textAlign = TextAlign.Justify,
+                modifier = modifier.padding(start = 5.dp, end = 5.dp, bottom = 5.dp)
             )
         }
     }
@@ -303,7 +265,22 @@ fun DetailsItem(
             .padding(start = 12.dp)
     ){
         detailsList.forEach {
-                detail -> Text(text = stringResource(id = detail))
+                detail ->
+            val text = stringResource(id = detail)
+            val parts = text.split(':', limit = 2) // Split the text at the first ':'
+            if (parts.size == 2) {
+                // Display the part before ':' in bold and the rest normally
+                Row {
+                    Text(
+                        text = parts[0] + ":",
+                        style = TextStyle(fontWeight = FontWeight.Bold)
+                    )
+                    Text(text = parts[1])
+                }
+            } else {
+                // If ':' is not found, display the entire text normally
+                Text(text = text)
+            }
         }
     }
 }
@@ -317,18 +294,21 @@ fun ChooseButton(
     backgroundColor: Int,
     textID: Int,
     widthFraction: Float,
+    sideIsLeft: Boolean,
     modifier: Modifier = Modifier
 ){
+    val shape = if (sideIsLeft) RoundedCornerShape(topStart = 16.dp, bottomStart = 16.dp)
+                else RoundedCornerShape(topEnd = 16.dp, bottomEnd = 16.dp)
     TextButton(
         onClick = {
             onClickScenesDialog(scenesTrigger)
             onClickActorsDialog(actorsTrigger)
         },
-        shape = RectangleShape,
+        shape = shape,
         border = BorderStroke(1.dp, Color.LightGray),
+        colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = backgroundColor)),
         modifier = modifier
             .fillMaxWidth(widthFraction)
-            .background(colorResource(id = backgroundColor))
     ) {
         Text(
             text = stringResource(id = textID),
@@ -416,7 +396,6 @@ fun NonlazyGrid(
 fun ZoomedImageDialog(
     imageRes: Int,
     onDismissRequest: () -> Unit,
-    windowInfo: WindowInfo
 ) {
     Dialog( onDismissRequest = { onDismissRequest() } )
     {
