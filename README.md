@@ -39,7 +39,8 @@ This application uses Jetpack Compose features and is based on the MVVM architec
 
 `DetailsScreen` defines the layout to present details about a movie. It uses:
 - *Scaffold* with *TopAppBar* to create a top bar with an arrow allowing to come back to the main screen,
-- *Column* and *verticalScroll(rememberScrollState())* to enable scrolling the screen when needed. Because of that - LazyGrid could not be used (it cannot be inside a component with enabled *verticalScroll*), so a custom *NonLazyGrid* was implemented to behave like a default one but without
+- *Column* and *verticalScroll(rememberScrollState())* to enable scrolling the screen when needed. Because of that - LazyGrid could not be used (it cannot be inside a component with enabled *verticalScroll*), so a custom *NonLazyGrid* was implemented to behave like a default one,
+- *remember* function to control the *mutableStatesOf* which defines whether a specific dialog should be displayed.
 
 `MovieDetails` is a data class used to conveniently store all the data about each movie.
 
