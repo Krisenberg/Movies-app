@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.ViewModelProvider
+import androidx.media3.exoplayer.ExoPlayer
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -17,13 +18,17 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.movies.screens.DetailsScreen
 import com.example.movies.screens.MainScreen
+import com.example.movies.screens.TrailerScreen
 import com.example.movies.ui.theme.MoviesTheme
 
 class MainActivity : ComponentActivity() {
     private lateinit var mainViewModel: MainViewModel
+    private lateinit var videoPlayer: ExoPlayer
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        videoPlayer = ExoPlayer.Builder(this).build()
 
         mainViewModel = ViewModelProvider(this)[MainViewModel::class.java]
         mainViewModel.init()
@@ -43,6 +48,9 @@ class MainActivity : ComponentActivity() {
                     ) {
                         composable(route = "MainScreen") {
                             MainScreen(moviesImgTitleList = mainViewModel.getMoviesImagesTitles(), navController)
+                        }
+                        composable(route = "TrailerScreen") {
+                            TrailerScreen(navController, windowInfo)
                         }
                         composable(route = "DetailsScreen/{index}",
                             arguments = listOf(
