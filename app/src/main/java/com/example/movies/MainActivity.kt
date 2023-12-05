@@ -50,7 +50,7 @@ class MainActivity : ComponentActivity() {
                             MainScreen(moviesImgTitleList = mainViewModel.getMoviesImagesTitles(), navController)
                         }
                         composable(route = "TrailerScreen") {
-                            TrailerScreen(navController, windowInfo)
+                            TrailerScreen(navController, windowInfo, mainViewModel.getMoviesImagesTitles())
                         }
                         composable(route = "DetailsScreen/{index}",
                             arguments = listOf(
