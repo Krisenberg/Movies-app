@@ -29,13 +29,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.movies.MainViewModel
 import com.example.movies.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
-    moviesImgTitleList: List<Pair<Int, Int>>,
     navController: NavController,
+    mainViewModel: MainViewModel,
     modifier: Modifier = Modifier
 ){
     Scaffold(
@@ -47,7 +48,10 @@ fun MainScreen(
                     Text(text = stringResource(id = R.string.list_header), fontSize = 24.sp)
                 },
                 navigationIcon = {
-                    IconButton(onClick = { navController.navigate(route = "TrailerScreen") }) {
+                    IconButton(onClick = {
+                        mainViewModel.setOrientLand()
+                        navController.navigate(route = "TrailerScreen")
+                    }) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
                             contentDescription = "Go back"
@@ -57,6 +61,7 @@ fun MainScreen(
             )
         },
     ){ values ->
+        val moviesImgTitleList = mainViewModel.getMoviesImagesTitles()
         LazyColumn(contentPadding = values) {
             val itemCount = moviesImgTitleList.size
             items(itemCount) {

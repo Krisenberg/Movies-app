@@ -58,6 +58,7 @@ import androidx.media3.exoplayer.hls.HlsMediaSource
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
 import androidx.navigation.NavController
+import com.example.movies.MainViewModel
 import com.example.movies.R
 import com.example.movies.WindowInfo
 
@@ -65,8 +66,7 @@ import com.example.movies.WindowInfo
 @Composable
 fun TrailerScreen(
     navController: NavController,
-    windowInfo: WindowInfo,
-    moviesImgTitleList: List<Pair<Int, Int>>,
+    mainViewModel: MainViewModel,
     modifier: Modifier = Modifier
 ) {
     Scaffold(
@@ -78,7 +78,10 @@ fun TrailerScreen(
                     Text(text = "Movie trailer", fontSize = 18.sp)
                 },
                 navigationIcon = {
-                    IconButton(onClick = { navController.navigate(route = "MainScreen") }) {
+                    IconButton(onClick = {
+                        mainViewModel.setPreviousOrientation()
+                        navController.navigate(route = "MainScreen")
+                    } ) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
                             contentDescription = "Go back"
@@ -157,6 +160,8 @@ fun TrailerScreen(
         var showDialog by rememberSaveable { mutableStateOf(false) }
         var showDialogTrailerID by rememberSaveable { mutableIntStateOf(0) }
         var playerPosition by rememberSaveable { mutableLongStateOf(0) }
+
+        val moviesImgTitleList = mainViewModel.getMoviesImagesTitles()
 
         LazyColumn(contentPadding = values) {
             items(
@@ -266,7 +271,7 @@ fun ZoomedTrailerDialog(
 //        playerView.player = player
         playerView.useController = true
         playerView.player?.seekTo(trailerID, playerPosition)
-        playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FILL
+        playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
         playerView.keepScreenOn = true
 
         var lifecycle by remember {

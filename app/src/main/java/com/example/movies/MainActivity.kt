@@ -1,5 +1,6 @@
 package com.example.movies
 
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -9,6 +10,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.navigation.NavType
@@ -20,7 +22,9 @@ import com.example.movies.screens.DetailsScreen
 import com.example.movies.screens.MainScreen
 import com.example.movies.screens.TrailerScreen
 import com.example.movies.ui.theme.MoviesTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private lateinit var mainViewModel: MainViewModel
     private lateinit var videoPlayer: ExoPlayer
@@ -28,13 +32,23 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        videoPlayer = ExoPlayer.Builder(this).build()
-
-        mainViewModel = ViewModelProvider(this)[MainViewModel::class.java]
-        mainViewModel.init()
-
         setContent {
             MoviesTheme {
+                mainViewModel = hiltViewModel<MainViewModel>()
+
+                val isOrientLandscape = requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+
+                mainViewModel.init(isOrientLandscape)
+
+                mainViewModel.requestedOrientLandscape().observe(this) {
+                    requestedOrientation = if (it)
+                        ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+                    else
+                        ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+                }
+
+                videoPlayer = ExoPlayer.Builder(this).build()
+
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
@@ -46,11 +60,11 @@ class MainActivity : ComponentActivity() {
                         navController = navController,
                         startDestination = "MainScreen"
                     ) {
-                        composable(route = "MainScreen") {
-                            MainScreen(moviesImgTitleList = mainViewModel.getMoviesImagesTitles(), navController)
+                        composable(route = "MainScreen") {navBackStackEntry ->
+                            MainScreen(navController, mainViewModel)
                         }
                         composable(route = "TrailerScreen") {
-                            TrailerScreen(navController, windowInfo, mainViewModel.getMoviesImagesTitles())
+                            TrailerScreen(navController, mainViewModel)
                         }
                         composable(route = "DetailsScreen/{index}",
                             arguments = listOf(
@@ -75,12 +89,18 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+    private fun changeOrientation() {
+        requestedOrientation = if (requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
+            ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+        else
+            ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+    }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun MoviesListPreview() {
-    val imagesList = ContentManager.getDatabaseData().map { it.mainImage }
-    val titlesList = ContentManager.getDatabaseData().map { it.title }
-    MainScreen(moviesImgTitleList = imagesList.zip(titlesList), navController = rememberNavController())
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun MoviesListPreview() {
+//    val imagesList = ContentManager.getDatabaseData().map { it.mainImage }
+//    val titlesList = ContentManager.getDatabaseData().map { it.title }
+//    MainScreen(moviesImgTitleList = imagesList.zip(titlesList), ::MainActivity.changeOrientation, navController = rememberNavController())
+//}
