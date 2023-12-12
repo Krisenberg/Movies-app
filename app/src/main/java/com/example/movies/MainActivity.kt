@@ -1,7 +1,9 @@
 package com.example.movies
 
 import android.content.pm.ActivityInfo
+import android.content.res.Configuration
 import android.os.Bundle
+import android.view.OrientationEventListener
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,6 +11,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -40,14 +43,28 @@ class MainActivity : ComponentActivity() {
 
                 mainViewModel.init(isOrientLandscape)
 
-                mainViewModel.requestedOrientLandscape().observe(this) {
-                    requestedOrientation = if (it)
-                        ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-                    else
-                        ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-                }
+//                mainViewModel.requestedOrientLandscape().observe(this) {
+//                    requestedOrientation = if (it)
+//                        ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+//                    else
+//                        ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+//                }
 
                 videoPlayer = ExoPlayer.Builder(this).build()
+
+//                val orientationEventListener = object : OrientationEventListener(this) {
+//                    override fun onOrientationChanged(orientation: Int) {
+//                        // The orientation value ranges from 0 to 359 degrees.
+//                        // You can check for specific ranges to determine portrait or landscape.
+//                        if (orientation in 45..134 || orientation in 225..314) {
+//                            mainViewModel.setOrientLand()
+//                        } else {
+//                            mainViewModel.setOrientPortrait()
+//                        }
+//                    }
+//                }
+//
+//                orientationEventListener.enable()
 
                 Surface(
                     modifier = Modifier.fillMaxSize(),
@@ -55,6 +72,19 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val navController = rememberNavController()
                     val windowInfo = rememberWindowInfo()
+
+//                    val configuration = LocalConfiguration.current
+//
+//                    // When orientation is Landscape
+//                    when (configuration.orientation) {
+//                        Configuration.ORIENTATION_LANDSCAPE -> {
+//                            mainViewModel.setOrientLand()
+//                        }
+//                        // Other wise
+//                        else -> {
+//                            mainViewModel.setOrientPortrait()
+//                        }
+//                    }
 
                     NavHost(
                         navController = navController,
@@ -89,6 +119,21 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
+//    override fun onResume() {
+//        super.onResume()
+//
+//        val isOrientLandscape = requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+//
+//        mainViewModel.init(isOrientLandscape)
+//
+//        mainViewModel.requestedOrientLandscape().observe(this) {
+//            requestedOrientation = if (it)
+//                ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+//            else
+//                ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+//        }
+//    }
     private fun changeOrientation() {
         requestedOrientation = if (requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
             ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE

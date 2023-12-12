@@ -80,6 +80,7 @@ fun TrailerScreen(
                 navigationIcon = {
                     IconButton(onClick = {
                         mainViewModel.setPreviousOrientation()
+//                        mainViewModel.setOrientPortrait()
                         navController.navigate(route = "MainScreen")
                     } ) {
                         Icon(
