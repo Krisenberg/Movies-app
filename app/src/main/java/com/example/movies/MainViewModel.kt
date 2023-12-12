@@ -20,19 +20,28 @@ class MainViewModel @Inject constructor(private val savedStateHandle: SavedState
 //    }
 
     private var previousOrientLandscape = savedStateHandle.get<Boolean>("previousOrientLandscape")
+    private var currentOrientLandscape = savedStateHandle.get<Boolean>("currentOrientLandscape")
     private val _requestedOrientLandscape = savedStateHandle.getLiveData<Boolean>("_requestedOrientLandscape", false)
     private var _selectedMainScreenTabIndex = savedStateHandle.get<Int>("_selectedMainScreenTabIndex")
     private var _isExpandedTrailerCard = savedStateHandle.get<Boolean>("_isExpandedTrailerCard")
     private var _expandedTrailerCardIndex = savedStateHandle.get<Int>("_ExpandedTrailerCardIndex")
 
-    fun init(currentOrientationLand: Boolean){
+    private lateinit var changeOrientationToLandscape: () -> Unit
+    private lateinit var changeOrientationToPortrait: () -> Unit
+
+    fun init(currentOrientationLand: Boolean, changeOrientToLand: () -> Unit,
+             changeOrientToPort: () -> Unit){
         previousOrientLandscape = if (previousOrientLandscape == null) currentOrientationLand else previousOrientLandscape
+        currentOrientLandscape = if (currentOrientLandscape == null) currentOrientationLand else currentOrientLandscape
         if (_selectedMainScreenTabIndex == null)
             _selectedMainScreenTabIndex = 0
         if (_isExpandedTrailerCard == null)
             _isExpandedTrailerCard = false
         if (_expandedTrailerCardIndex == null)
             _expandedTrailerCardIndex = 0
+
+        changeOrientationToLandscape = changeOrientToLand
+        changeOrientationToPortrait = changeOrientToPort
     }
 
     fun requestedOrientLandscape(): MutableLiveData<Boolean> { return _requestedOrientLandscape }
@@ -65,6 +74,18 @@ class MainViewModel @Inject constructor(private val savedStateHandle: SavedState
         return moviesData[iD]
     }
 
+    fun getMovieTrailers(): List<String> {
+        val moviesData = ContentManager.getDatabaseData()
+        return moviesData.map { it.trailerUrl }
+    }
+
+    fun getMovieTrailersCardsData(): List<Pair<Int, Int>> {
+        val moviesData = ContentManager.getDatabaseData()
+        val trailerImagesList = moviesData.map { it.trailerImage }
+        val titlesAbbrevsList = moviesData.map { it.titleAbbrev }
+        return trailerImagesList.zip(titlesAbbrevsList)
+    }
+
     fun selectedMainScreenTabIndex(): Int {
         return _selectedMainScreenTabIndex!!
     }
@@ -88,4 +109,19 @@ class MainViewModel @Inject constructor(private val savedStateHandle: SavedState
     fun expandedTrailerCardIndex(newCardIndex: Int) {
         _expandedTrailerCardIndex = newCardIndex
     }
+
+    fun changeOrientToLandscape() {
+        previousOrientLandscape = currentOrientLandscape
+        currentOrientLandscape = true
+        changeOrientationToLandscape()
+    }
+
+    fun changeOrientToPrevious() {
+        currentOrientLandscape = previousOrientLandscape
+        if (currentOrientLandscape != null && currentOrientLandscape!!)
+            changeOrientationToLandscape()
+        else
+            changeOrientationToPortrait()
+    }
+
 }

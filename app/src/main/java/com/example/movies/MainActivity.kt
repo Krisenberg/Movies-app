@@ -22,6 +22,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.movies.screens.DetailsScreen
+import com.example.movies.screens.FullscreenTrailerScreen
 import com.example.movies.screens.MainScreen
 import com.example.movies.screens.TrailerScreen
 import com.example.movies.ui.theme.MoviesTheme
@@ -41,7 +42,11 @@ class MainActivity : ComponentActivity() {
 
                 val isOrientLandscape = requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
 
-                mainViewModel.init(isOrientLandscape)
+                mainViewModel.init(
+                    isOrientLandscape,
+                    { requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE },
+                    { requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT }
+                )
 
 //                mainViewModel.requestedOrientLandscape().observe(this) {
 //                    requestedOrientation = if (it)
@@ -112,6 +117,24 @@ class MainActivity : ComponentActivity() {
                                 movieDetails = mainViewModel.getMovieDetailsObject(itemIndex),
                                 navController = navController,
                                 windowInfo = windowInfo
+                            )
+                        }
+                        composable(route = "FullscreenTrailerScreen/{index}",
+                            arguments = listOf(
+                                navArgument(name = "index"){
+                                    type = NavType.IntType
+                                }
+                            )
+                        ){
+                                index ->
+                            var itemIndex = index.arguments?.getInt("index")
+                            if (itemIndex == null){
+                                itemIndex = 0
+                            }
+                            FullscreenTrailerScreen(
+                                navController = navController,
+                                mainViewModel = mainViewModel,
+                                trailerID = itemIndex!!
                             )
                         }
                     }

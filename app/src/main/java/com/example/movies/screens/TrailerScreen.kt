@@ -6,7 +6,13 @@ import android.net.VpnService.prepare
 import android.os.Bundle
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.Toast
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,12 +23,16 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.Fullscreen
+import androidx.compose.material.icons.filled.FullscreenExit
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -32,15 +42,19 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -68,185 +82,306 @@ fun TrailerScreen(
     navController: NavController,
     mainViewModel: MainViewModel,
     modifier: Modifier = Modifier
-) {
-    Scaffold(
-        modifier = Modifier
-            .fillMaxSize(),
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(text = "Movie trailer", fontSize = 18.sp)
-                },
-                navigationIcon = {
-                    IconButton(onClick = {
-                        mainViewModel.setPreviousOrientation()
-//                        mainViewModel.setOrientPortrait()
-                        navController.navigate(route = "MainScreen")
-                    } ) {
-                        Icon(
-                            imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "Go back"
-                        )
-                    }
-                }
-            )
-        },
-    ) { values ->
-//        val playWhenReady by remember { mutableStateOf(true) }
+) {}
+//    Scaffold(
+//        modifier = Modifier
+//            .fillMaxSize(),
+//        topBar = {
+//            TopAppBar(
+//                title = {
+//                    Text(text = "Movie trailer", fontSize = 18.sp)
+//                },
+//                navigationIcon = {
+//                    IconButton(onClick = {
+//                        mainViewModel.setPreviousOrientation()
+////                        mainViewModel.setOrientPortrait()
+//                        navController.navigate(route = "MainScreen")
+//                    } ) {
+//                        Icon(
+//                            imageVector = Icons.Default.ArrowBack,
+//                            contentDescription = "Go back"
+//                        )
+//                    }
+//                }
+//            )
+//        },
+//    ) { values ->
+////        val playWhenReady by remember { mutableStateOf(true) }
+////        val context = LocalContext.current
+////        val mediaItem =
+////            MediaItem.fromUri("https://fwcdn.pl/video/f/36/936/gladiator___official__trailer__hd_.h265.1080p.mp4")
+////        // Create a data source factory.
+//////        val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
+////        // Create a HLS media source pointing to a playlist uri.
+//////        val hlsMediaSource =
+//////            HlsMediaSource.Factory(dataSourceFactory).createMediaSource(MediaItem.fromUri("https://fwcdn.pl/video/f/36/936/gladiator___official__trailer__hd_.h265.1080p.mp4"))
+////        // Set the HLS media source as the playlist with a single media item.
+////
+////        val playerView = PlayerView(context)
+////        val player = ExoPlayer.Builder(context).build()
+////
+////        player.setMediaItem(mediaItem)
+//////        player.setMediaSource(hlsMediaSource)
+////        playerView.player = player
+////        LaunchedEffect(player) {
+////            player.prepare()
+////            player.playWhenReady = playWhenReady
+////        }
+////        AndroidView(
+////            modifier = Modifier
+////                .fillMaxWidth()
+////                .padding(values),
+////            factory = {
+////                playerView
+////            }
+////        )
+////        Column(
+////            modifier = Modifier
+////                .fillMaxSize()
+////                .padding(values),
+////            horizontalAlignment = Alignment.CenterHorizontally,
+////            verticalArrangement = Arrangement.Center
+////        ){
+////            VideoPlayer(
+////                initialTrailerIndex = 0
+////            )
+////        }
+//
+//        val movies = listOf(
+//            "https://fwcdn.pl/video/f/165/1065/the_lord_of_the_rings_the_fellowship_of_the_ring_trailer_2__2001_.vp9.720p.webm",
+//            "https://fwcdn.pl/video/f/251/31451/the_lord_of_the_rings_the_two_towers___official__trailer__hd_.h265.720p.mp4",
+//            "https://fwcdn.pl/video/f/141/11841/the_lord_of_the_rings_the_return_of_the_king___official__trailer__hd_.h265.720p.mp4",
+//            "https://fwcdn.pl/video/trailer/Oppenheimer___New_Trailer.h265.1080p.mp4",
+//            "https://fwcdn.pl/video/120749/auta_zwiastun_pl.360p.mp4",
+//            "https://fwcdn.pl/video/f/104/33404/shrek_2___official__trailer__hd_.vp9.1080p.webm",
+//            "https://fwcdn.pl/video/f/242/107642/casino_royale_trailer_hd.vp9.1080p.webm",
+//            "https://fwcdn.pl/video/f/159/759/sw_revised.h265.720p.mp4",
+//            "https://fwcdn.pl/video/f/36/936/gladiator___official__trailer__hd_.h265.1080p.mp4",
+//        )
+//
 //        val context = LocalContext.current
-//        val mediaItem =
-//            MediaItem.fromUri("https://fwcdn.pl/video/f/36/936/gladiator___official__trailer__hd_.h265.1080p.mp4")
-//        // Create a data source factory.
-////        val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
-//        // Create a HLS media source pointing to a playlist uri.
-////        val hlsMediaSource =
-////            HlsMediaSource.Factory(dataSourceFactory).createMediaSource(MediaItem.fromUri("https://fwcdn.pl/video/f/36/936/gladiator___official__trailer__hd_.h265.1080p.mp4"))
-//        // Set the HLS media source as the playlist with a single media item.
+//        val exoPlayer = ExoPlayer.Builder(context).build()
+//        for (trailerUri in movies) {
+//            val mediaItem = MediaItem.fromUri(trailerUri)
+//            exoPlayer.addMediaItem(mediaItem)
+//        }
+//
+//        exoPlayer.prepare()
+////        exoPlayer.seekTo(0, 0)
 //
 //        val playerView = PlayerView(context)
-//        val player = ExoPlayer.Builder(context).build()
+//        playerView.player = exoPlayer
 //
-//        player.setMediaItem(mediaItem)
-////        player.setMediaSource(hlsMediaSource)
-//        playerView.player = player
-//        LaunchedEffect(player) {
-//            player.prepare()
-//            player.playWhenReady = playWhenReady
-//        }
-//        AndroidView(
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .padding(values),
-//            factory = {
-//                playerView
-//            }
-//        )
-//        Column(
-//            modifier = Modifier
-//                .fillMaxSize()
-//                .padding(values),
-//            horizontalAlignment = Alignment.CenterHorizontally,
-//            verticalArrangement = Arrangement.Center
-//        ){
-//            VideoPlayer(
-//                initialTrailerIndex = 0
+//        var showDialog by rememberSaveable { mutableStateOf(false) }
+//        var showDialogTrailerID by rememberSaveable { mutableIntStateOf(0) }
+//        var playerPosition by rememberSaveable { mutableLongStateOf(0) }
+//
+//        val moviesImgTitleList = mainViewModel.getMoviesImagesTitles()
+//
+//        LazyColumn(contentPadding = values) {
+//            items(
+//                count = moviesImgTitleList.size,
+//                key = {
+//                    moviesImgTitleList[it].second
+//                },
+//                itemContent = { index ->
+//                    ColumnItemTrailer(
+//                        movieImgID = moviesImgTitleList[index].first,
+//                        movieTitleID = moviesImgTitleList[index].second,
+//                        itemIndex = index,
+//                        onShowDialogChange = { newValue -> showDialog = newValue },
+//                        onShowDialogTrailerIDChange = { newValue -> showDialogTrailerID = newValue },
+//                        modifier = modifier)
+//                }
 //            )
 //        }
-
-        val movies = listOf(
-            "https://fwcdn.pl/video/f/165/1065/the_lord_of_the_rings_the_fellowship_of_the_ring_trailer_2__2001_.vp9.720p.webm",
-            "https://fwcdn.pl/video/f/251/31451/the_lord_of_the_rings_the_two_towers___official__trailer__hd_.h265.720p.mp4",
-            "https://fwcdn.pl/video/f/141/11841/the_lord_of_the_rings_the_return_of_the_king___official__trailer__hd_.h265.720p.mp4",
-            "https://fwcdn.pl/video/trailer/Oppenheimer___New_Trailer.h265.1080p.mp4",
-            "https://fwcdn.pl/video/120749/auta_zwiastun_pl.360p.mp4",
-            "https://fwcdn.pl/video/f/104/33404/shrek_2___official__trailer__hd_.vp9.1080p.webm",
-            "https://fwcdn.pl/video/f/242/107642/casino_royale_trailer_hd.vp9.1080p.webm",
-            "https://fwcdn.pl/video/f/159/759/sw_revised.h265.720p.mp4",
-            "https://fwcdn.pl/video/f/36/936/gladiator___official__trailer__hd_.h265.1080p.mp4",
-        )
-
-        val context = LocalContext.current
-        val exoPlayer = ExoPlayer.Builder(context).build()
-        for (trailerUri in movies) {
-            val mediaItem = MediaItem.fromUri(trailerUri)
-            exoPlayer.addMediaItem(mediaItem)
-        }
-
-        exoPlayer.prepare()
-//        exoPlayer.seekTo(0, 0)
-
-        val playerView = PlayerView(context)
-        playerView.player = exoPlayer
-
-        var showDialog by rememberSaveable { mutableStateOf(false) }
-        var showDialogTrailerID by rememberSaveable { mutableIntStateOf(0) }
-        var playerPosition by rememberSaveable { mutableLongStateOf(0) }
-
-        val moviesImgTitleList = mainViewModel.getMoviesImagesTitles()
-
-        LazyColumn(contentPadding = values) {
-            items(
-                count = moviesImgTitleList.size,
-                key = {
-                    moviesImgTitleList[it].second
-                },
-                itemContent = { index ->
-                    ColumnItemTrailer(
-                        movieImgID = moviesImgTitleList[index].first,
-                        movieTitleID = moviesImgTitleList[index].second,
-                        itemIndex = index,
-                        onShowDialogChange = { newValue -> showDialog = newValue },
-                        onShowDialogTrailerIDChange = { newValue -> showDialogTrailerID = newValue },
-                        modifier = modifier)
-                }
-            )
-        }
-        if (showDialog) {
-            ZoomedTrailerDialog(
-                playerView = playerView,
-                trailerID = showDialogTrailerID,
-                playerPosition = playerPosition,
-                onPlayerPositionChange = { newPosition -> playerPosition = newPosition },
-                onDismissRequest = { showDialog = false; exoPlayer.release() })
-        }
-    }
-}
+//        if (showDialog) {
+//            ZoomedTrailerDialog(
+//                playerView = playerView,
+//                trailerID = showDialogTrailerID,
+//                playerPosition = playerPosition,
+//                onPlayerPositionChange = { newPosition -> playerPosition = newPosition },
+//                onDismissRequest = { showDialog = false; exoPlayer.release() })
+//        }
+//    }
+//}
 
 @Composable
-fun ColumnItemTrailer(
-    movieImgID: Int,
+fun CardItemTrailer(
+    mainViewModel: MainViewModel,
+    trailerImgID: Int,
     movieTitleID: Int,
     itemIndex: Int,
-    onShowDialogChange: (Boolean) -> Unit,
+    expandedState: Boolean,
+    isExpandedCardChange: () -> Unit,
+    expandedCardIndex: (Int) -> Unit,
+    onShowDialogChange: () -> Unit,
     onShowDialogTrailerIDChange: (Int) -> Unit,
+    navController: NavController,
     modifier: Modifier
 ){
+    var isExpandedCard by remember { mutableStateOf(expandedState) }
     Card(
         modifier
             .padding(8.dp)
             .wrapContentSize()
-            .clickable {
-                onShowDialogChange(true)
-                onShowDialogTrailerIDChange(itemIndex)
-            },
+            .animateContentSize(
+                animationSpec = tween(
+                    durationMillis = 300,
+                    easing = LinearOutSlowInEasing
+                )
+            ),
+//            .clickable {
+//                onShowDialogChange(true)
+//                onShowDialogTrailerIDChange(itemIndex)
+//            },
         colors = CardDefaults.cardColors(
             containerColor = Color.White
         ),
         elevation = CardDefaults.cardElevation(10.dp)
     ) {
+        CardItemTrailerContent(
+            mainViewModel = mainViewModel,
+            trailerImgID = trailerImgID,
+            movieTitleID = movieTitleID,
+            itemIndex = itemIndex,
+            expandedState = expandedState,
+            isExpandedCardChange = isExpandedCardChange,
+            expandedCardIndexChange = expandedCardIndex,
+            onShowDialogChange = onShowDialogChange,
+            onShowDialogTrailerIDChange = onShowDialogTrailerIDChange,
+            navController = navController,
+            modifier = modifier
+        )
+    }
+}
+
+@Composable
+fun CardItemTrailerContent(
+    mainViewModel: MainViewModel,
+    trailerImgID: Int,
+    movieTitleID: Int,
+    itemIndex: Int,
+    expandedState: Boolean,
+    isExpandedCardChange: () -> Unit,
+    expandedCardIndexChange: (Int) -> Unit,
+    onShowDialogChange: () -> Unit,
+    onShowDialogTrailerIDChange: (Int) -> Unit,
+    navController: NavController,
+    modifier: Modifier
+){
+    var isExpandedCard by remember { mutableStateOf(expandedState) }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+    ){
         Row (
-            modifier.fillMaxWidth(),
+            modifier
+                .fillMaxWidth()
+                .clickable {
+                    //navController.navigate(route = "DetailsScreen/$itemIndex")
+                    isExpandedCard = !isExpandedCard
+                    isExpandedCardChange()
+                    expandedCardIndexChange(itemIndex)
+                },
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
+            val rotationState by animateFloatAsState(
+                targetValue = if (isExpandedCard) 180f else 0f
+            )
             Image(
-                painter = painterResource(id = movieImgID),
+                painter = painterResource(id = trailerImgID),
                 contentDescription = stringResource(id = R.string.dummy_desc),
                 modifier
-                    .fillMaxWidth(0.5f)
+                    .fillMaxWidth(0.45f)
+                    .clip(RoundedCornerShape(10.dp))
                 //.size(width = 172.dp, height = 97.dp)
             )
             Text(
                 text = stringResource(id = movieTitleID),
                 fontSize = 22.sp,
                 modifier = Modifier
-                    .padding(4.dp)
+                    .fillMaxWidth(0.8f)
+                    .padding(start = 4.dp)
             )
+            IconButton(
+                modifier = Modifier
+                    .alpha(0.8f)
+                    .weight(1f)
+                    .rotate(rotationState),
+                onClick = {
+                    isExpandedCard = !isExpandedCard
+                    isExpandedCardChange()
+                    expandedCardIndexChange(itemIndex)
+                }) {
+                Icon(
+                    imageVector = Icons.Default.ArrowDropDown,
+                    contentDescription = "Drop-Down Arrow"
+                )
+
+            }
+        }
+        if (isExpandedCard) {
+            Row (
+                modifier
+                    .fillMaxWidth()
+                    .padding(top = 12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
+            ){
+                Row (
+                    modifier
+                        .fillMaxWidth(0.5f)
+                        .clickable {
+                            onShowDialogChange()
+                            onShowDialogTrailerIDChange(itemIndex)
+                        },
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.FullscreenExit,
+                        contentDescription = "Preview icon"
+                    )
+                    Text(
+                        text = "Preview",
+                        fontSize = 28.sp,
+                        modifier = Modifier
+                    )
+                }
+                Row (
+                    modifier
+                        .fillMaxWidth(1f)
+                        .clickable {
+                            navController.navigate(route = "FullscreenTrailerScreen/$itemIndex")
+                        },
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Fullscreen,
+                        contentDescription = "Fullscreen icon"
+                    )
+                    Text(
+                        text = "Fullscreen",
+                        fontSize = 28.sp,
+                        modifier = Modifier
+                    )
+                }
+            }
         }
     }
 }
 
 @androidx.annotation.OptIn(UnstableApi::class) @Composable
 fun ZoomedTrailerDialog(
+    player: ExoPlayer,
     playerView: PlayerView,
     trailerID: Int,
-    playerPosition: Long,
-    onPlayerPositionChange: (Long) -> Unit,
     onDismissRequest: () -> Unit,
 ) {
     DisposableEffect(Unit) {
         onDispose {
-            onPlayerPositionChange(playerView.player!!.currentPosition)
             playerView.player!!.pause()
         }
     }
@@ -266,12 +401,11 @@ fun ZoomedTrailerDialog(
     ) {
 //        val context = LocalContext.current
 
-//        player.seekTo(trailerID,0)
+        player.seekTo(trailerID,0)
 
 //        val playerView = PlayerView(context)
 //        playerView.player = player
         playerView.useController = true
-        playerView.player?.seekTo(trailerID, playerPosition)
         playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
         playerView.keepScreenOn = true
 

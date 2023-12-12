@@ -33,7 +33,9 @@ object ContentManager {
             R.string.lotr_1_actor_10,
             R.string.lotr_1_actor_11,
             R.string.lotr_1_actor_12,
-        )
+        ),
+        trailerUrl = "https://fwcdn.pl/video/f/165/1065/the_lord_of_the_rings_the_fellowship_of_the_ring_trailer_2__2001_.vp9.720p.webm",
+        trailerImage = R.drawable.trailer_img_lotr_1
     )
 
     private val lotr_2 = MovieDetails(
@@ -66,7 +68,9 @@ object ContentManager {
             R.string.lotr_2_actor_10,
             R.string.lotr_2_actor_11,
             R.string.lotr_2_actor_12,
-        )
+        ),
+        trailerUrl = "https://fwcdn.pl/video/f/251/31451/the_lord_of_the_rings_the_two_towers___official__trailer__hd_.h265.720p.mp4",
+        trailerImage = R.drawable.trailer_img_lotr_2
     )
 
     private val lotr_3 = MovieDetails(
@@ -99,7 +103,9 @@ object ContentManager {
             R.string.lotr_3_actor_10,
             R.string.lotr_3_actor_11,
             R.string.lotr_3_actor_12,
-        )
+        ),
+        trailerUrl = "https://fwcdn.pl/video/f/141/11841/the_lord_of_the_rings_the_return_of_the_king___official__trailer__hd_.h265.720p.mp4",
+        trailerImage = R.drawable.trailer_img_lotr_3
     )
 
     private val oppenheimer = MovieDetails(
@@ -132,7 +138,9 @@ object ContentManager {
             R.string.oppenheimer_actor_10,
             R.string.oppenheimer_actor_11,
             R.string.oppenheimer_actor_12,
-        )
+        ),
+        trailerUrl = "https://fwcdn.pl/video/trailer/Oppenheimer___New_Trailer.h265.1080p.mp4",
+        trailerImage = R.drawable.trailer_img_oppenheimer
     )
 
     private val cars = MovieDetails(
@@ -163,7 +171,9 @@ object ContentManager {
             R.string.cars_actor_8,
             R.string.cars_actor_9,
             R.string.cars_actor_10,
-        )
+        ),
+        trailerUrl = "https://fwcdn.pl/video/120749/cars_640.360p.mp4",
+        trailerImage = R.drawable.trailer_img_cars
     )
 
     private val shrek_2 = MovieDetails(
@@ -196,7 +206,9 @@ object ContentManager {
             R.string.shrek_2_actor_10,
             R.string.shrek_2_actor_11,
             R.string.shrek_2_actor_12,
-        )
+        ),
+        trailerUrl = "https://fwcdn.pl/video/f/104/33404/shrek_2___official__trailer__hd_.vp9.1080p.webm",
+        trailerImage = R.drawable.trailer_img_shrek_2
     )
 
     private val casino_royale = MovieDetails(
@@ -227,7 +239,9 @@ object ContentManager {
             R.string.casino_royale_actor_8,
             R.string.casino_royale_actor_9,
             R.string.casino_royale_actor_10
-        )
+        ),
+        trailerUrl = "https://fwcdn.pl/video/f/242/107642/casino_royale_trailer_hd.vp9.1080p.webm",
+        trailerImage = R.drawable.trailer_img_casino_royale
     )
 
     private val star_wars = MovieDetails(
@@ -258,7 +272,9 @@ object ContentManager {
             R.string.star_wars_actor_8,
             R.string.star_wars_actor_9,
             R.string.star_wars_actor_10
-        )
+        ),
+        trailerUrl = "https://fwcdn.pl/video/f/159/759/sw_revised.h265.720p.mp4",
+        trailerImage = R.drawable.trailer_img_star_wars
     )
 
     private val gladiator = MovieDetails(
@@ -291,7 +307,9 @@ object ContentManager {
             R.string.gladiator_actor_10,
             R.string.gladiator_actor_11,
             R.string.gladiator_actor_12
-        )
+        ),
+        trailerUrl = "https://fwcdn.pl/video/f/36/936/gladiator___official__trailer__hd_.h265.1080p.mp4",
+        trailerImage = R.drawable.trailer_img_gladiator
     )
 
     private val movieDatabase = listOf(

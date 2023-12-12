@@ -55,12 +55,15 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
 import androidx.navigation.NavController
+import com.example.movies.ContentManager
 import com.example.movies.MainViewModel
 import com.example.movies.R
 import com.google.android.material.tabs.TabItem
@@ -86,17 +89,14 @@ fun MainScreen(
     )
 
     var selectedTabIndex by remember { mutableIntStateOf(mainViewModel.selectedMainScreenTabIndex()) }
-    var isExpandedCard by remember { mutableStateOf(mainViewModel.isExpandedTrailerCard()) }
-    var expandedCardIndex by remember { mutableStateOf(mainViewModel.expandedTrailerCardIndex()) }
-
     val pagerState = rememberPagerState {
         tabItems.size
     }
-    
+
     LaunchedEffect(selectedTabIndex) {
         pagerState.animateScrollToPage(selectedTabIndex)
     }
-    
+
     LaunchedEffect(pagerState.currentPage, pagerState.isScrollInProgress) {
         if(!pagerState.isScrollInProgress) {
             selectedTabIndex = pagerState.currentPage
@@ -130,7 +130,7 @@ fun MainScreen(
                 )
             }
         }
-        
+
         HorizontalPager(
             state = pagerState,
             modifier = Modifier
@@ -150,15 +150,6 @@ fun MainScreen(
                                 movieTitleID = moviesImgTitleList[it].second,
                                 itemIndex = it,
                                 navController = navController,
-                                expandedState = mainViewModel.isExpandedTrailerCard(),
-                                isExpandedCardChange = {
-                                    isExpandedCard = !isExpandedCard
-                                    mainViewModel.isExpandedTrailerCard(!isExpandedCard)
-                                },
-                                expandedCardIndex = {index ->
-                                    expandedCardIndex = index
-                                    mainViewModel.expandedTrailerCardIndex(index)
-                                },
                                 modifier = modifier)
                         }
                     }
@@ -166,18 +157,20 @@ fun MainScreen(
                 if (index == 1) {
                     var isExpandedCard by remember { mutableStateOf(mainViewModel.isExpandedTrailerCard()) }
                     var expandedCardIndex by remember { mutableIntStateOf(mainViewModel.expandedTrailerCardIndex()) }
+                    var showDialog by rememberSaveable { mutableStateOf(false) }
+                    var showDialogTrailerID by rememberSaveable { mutableIntStateOf(0) }
 
-                    val movies = listOf(
-                        "https://fwcdn.pl/video/f/165/1065/the_lord_of_the_rings_the_fellowship_of_the_ring_trailer_2__2001_.vp9.720p.webm",
-                        "https://fwcdn.pl/video/f/251/31451/the_lord_of_the_rings_the_two_towers___official__trailer__hd_.h265.720p.mp4",
-                        "https://fwcdn.pl/video/f/141/11841/the_lord_of_the_rings_the_return_of_the_king___official__trailer__hd_.h265.720p.mp4",
-                        "https://fwcdn.pl/video/trailer/Oppenheimer___New_Trailer.h265.1080p.mp4",
-                        "https://fwcdn.pl/video/120749/auta_zwiastun_pl.360p.mp4",
-                        "https://fwcdn.pl/video/f/104/33404/shrek_2___official__trailer__hd_.vp9.1080p.webm",
-                        "https://fwcdn.pl/video/f/242/107642/casino_royale_trailer_hd.vp9.1080p.webm",
-                        "https://fwcdn.pl/video/f/159/759/sw_revised.h265.720p.mp4",
-                        "https://fwcdn.pl/video/f/36/936/gladiator___official__trailer__hd_.h265.1080p.mp4",
-                    )
+//                    expandedState = mainViewModel.isExpandedTrailerCard(),
+//                    isExpandedCardChange = {
+//                        isExpandedCard = !isExpandedCard
+//                        mainViewModel.isExpandedTrailerCard(!isExpandedCard)
+//                    },
+//                    expandedCardIndex = {index ->
+//                        expandedCardIndex = index
+//                        mainViewModel.expandedTrailerCardIndex(index)
+//                    },
+
+                    val movies = mainViewModel.getMovieTrailers()
 
                     val context = LocalContext.current
                     val exoPlayer = ExoPlayer.Builder(context).build()
@@ -185,48 +178,55 @@ fun MainScreen(
                         val mediaItem = MediaItem.fromUri(trailerUri)
                         exoPlayer.addMediaItem(mediaItem)
                     }
-
                     exoPlayer.prepare()
-//        exoPlayer.seekTo(0, 0)
 
                     val playerView = PlayerView(context)
                     playerView.player = exoPlayer
 
-                    var showDialog by rememberSaveable { mutableStateOf(false) }
-                    var showDialogTrailerID by rememberSaveable { mutableIntStateOf(0) }
-                    var playerPosition by rememberSaveable { mutableLongStateOf(0) }
-
-                    val moviesImgTitleList = mainViewModel.getMoviesImagesTitles()
+                    val trailersImgTitleList = mainViewModel.getMovieTrailersCardsData()
 
                     LazyColumn{
                         items(
-                            count = moviesImgTitleList.size,
+                            count = trailersImgTitleList.size,
                             key = {
-                                moviesImgTitleList[it].second
+                                trailersImgTitleList[it].second
                             },
-                            itemContent = { index ->
-                                ColumnItemTrailer(
-                                    movieImgID = moviesImgTitleList[index].first,
-                                    movieTitleID = moviesImgTitleList[index].second,
-                                    itemIndex = index,
-                                    onShowDialogChange = { newValue -> showDialog = newValue },
+                            itemContent = { itemIndex ->
+                                CardItemTrailer(
+                                    mainViewModel = mainViewModel,
+                                    trailerImgID = trailersImgTitleList[itemIndex].first,
+                                    movieTitleID = trailersImgTitleList[itemIndex].second,
+                                    itemIndex = itemIndex,
+                                    expandedState = isExpandedCard,
+                                    isExpandedCardChange = {
+                                        isExpandedCard = !isExpandedCard
+                                        mainViewModel.isExpandedTrailerCard(!isExpandedCard)
+                                    },
+                                    expandedCardIndex = { newIndex ->
+                                        expandedCardIndex = newIndex
+                                        mainViewModel.expandedTrailerCardIndex(newIndex)
+                                    },
+                                    onShowDialogChange = { showDialog = true },
                                     onShowDialogTrailerIDChange = { newValue -> showDialogTrailerID = newValue },
-                                    modifier = modifier)
+                                    navController = navController,
+                                    modifier = Modifier
+                                )
                             }
                         )
                     }
                     if (showDialog) {
                         ZoomedTrailerDialog(
+                            player = exoPlayer,
                             playerView = playerView,
                             trailerID = showDialogTrailerID,
-                            playerPosition = playerPosition,
-                            onPlayerPositionChange = { newPosition -> playerPosition = newPosition },
-                            onDismissRequest = { showDialog = false; exoPlayer.release() })
+                            onDismissRequest = { showDialog = false; exoPlayer.release() }
+                        )
                     }
                 }
             }
         }
     }
+///////////////////////////////////////////////////////
 //    Scaffold(
 //        modifier = Modifier
 //            .fillMaxSize(),
@@ -262,6 +262,7 @@ fun MainScreen(
 //            }
 //        }
 //    }
+//////////////////////////////////////////////////////
 }
 
 @Composable
@@ -270,80 +271,37 @@ fun ColumnItem(
     movieTitleID: Int,
     itemIndex: Int,
     navController: NavController,
-    expandedState: Boolean,
-    isExpandedCardChange: () -> Unit,
-    expandedCardIndex: (Int) -> Unit,
     modifier: Modifier
 ){
-    var isExpandedCard by remember { mutableStateOf(expandedState) }
     Card(
         modifier
             .padding(8.dp)
             .wrapContentSize()
-            .animateContentSize(
-                animationSpec = tween(
-                    durationMillis = 300,
-                    easing = LinearOutSlowInEasing
-                )
-            )
             .clickable {
-                //navController.navigate(route = "DetailsScreen/$itemIndex")
-                isExpandedCard = !isExpandedCard
-                isExpandedCardChange()
-                expandedCardIndex(itemIndex)
+                navController.navigate(route = "DetailsScreen/$itemIndex")
             },
         colors = CardDefaults.cardColors(
             containerColor = Color.White
         ),
         elevation = CardDefaults.cardElevation(10.dp)
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
-        ){
-            Row (
-                modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
-                val rotationState by animateFloatAsState(
-                    targetValue = if (isExpandedCard) 180f else 0f
-                )
-                Image(
-                    painter = painterResource(id = movieImgID),
-                    contentDescription = stringResource(id = R.string.dummy_desc),
-                    modifier
-                        .fillMaxWidth(0.5f)
-                    //.size(width = 172.dp, height = 97.dp)
-                )
-                Text(
-                    text = stringResource(id = movieTitleID),
-                    fontSize = 22.sp,
-                    modifier = Modifier
-                        .padding(4.dp)
-                )
-                IconButton(
-                    modifier = Modifier
-                        .alpha(0.8f)
-                        .weight(1f)
-                        .rotate(rotationState),
-                    onClick = {
-                        isExpandedCard = !isExpandedCard
-                        isExpandedCardChange()
-                        expandedCardIndex(itemIndex)
-                    }) {
-                    Icon(
-                        imageVector = Icons.Default.ArrowDropDown,
-                        contentDescription = "Drop-Down Arrow"
-                    )
-
-                }
-            }
-            if (isExpandedCard)
-                Text (
-                    text = "Some dummy text"
-                )
+    ){
+        Row (
+            modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            Image(
+                painter = painterResource(id = movieImgID),
+                contentDescription = "Movie image",
+                modifier
+                    .fillMaxWidth(0.5f)
+            )
+            Text(
+                text = stringResource(id = movieTitleID),
+                fontSize = 22.sp,
+                modifier = Modifier
+                    .padding(4.dp)
+            )
         }
     }
 }
@@ -353,3 +311,31 @@ data class TabItem(
     val unselectedIcon: ImageVector,
     val selectedIcon: ImageVector
 )
+
+@Preview(showBackground = true)
+@Composable
+fun MoviesListPreview() {
+//    val moviesData = ContentManager.getDatabaseData()
+//    val imagesList = moviesData.map { it.trailerImage }
+//    val titlesList = moviesData.map { it.titleAbbrev }
+//    val moviesImgTitleList = imagesList.zip(titlesList)
+//    val index = 0
+//
+//    var showDialog by rememberSaveable { mutableStateOf(false) }
+//    var showDialogTrailerID by rememberSaveable { mutableIntStateOf(0) }
+//    var selectedTabIndex by remember { mutableIntStateOf(0) }
+//    var isExpandedCard by remember { mutableStateOf(true) }
+//    var expandedCardIndex by remember { mutableStateOf(0) }
+//
+//    CardItemTrailer(
+//        trailerImgID = moviesImgTitleList[index].first,
+//        movieTitleID = moviesImgTitleList[index].second,
+//        itemIndex = index,
+//        expandedState = isExpandedCard,
+//        isExpandedCardChange = { isExpandedCard = !isExpandedCard },
+//        expandedCardIndex = { newIndex -> expandedCardIndex = index},
+//        onShowDialogChange = { showDialog = true },
+//        onShowDialogTrailerIDChange = { newValue -> showDialogTrailerID = newValue },
+//        modifier = Modifier
+//    )
+}
