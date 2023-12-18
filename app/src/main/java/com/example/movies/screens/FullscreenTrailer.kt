@@ -1,5 +1,8 @@
 package com.example.movies.screens
 
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.compose.BackHandler
+import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
@@ -16,19 +19,24 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
@@ -63,17 +71,32 @@ fun FullscreenTrailerScreen(
 
         val playerView = PlayerView(context)
         playerView.player = exoPlayer
-
         exoPlayer.seekTo(trailerID,0)
 
 //        val playerView = PlayerView(context)
 //        playerView.player = player
         playerView.useController = true
-        playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
+        playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
         playerView.keepScreenOn = true
 
-        var lifecycle by remember {
-            mutableStateOf(Lifecycle.Event.ON_CREATE)
+//        var lifecycle by remember {
+//            mutableStateOf(Lifecycle.Event.ON_CREATE)
+//        }
+
+//        DisposableEffect(Unit) {
+//            onDispose {
+//                playerView.player!!.pause()
+//            }
+//        }
+
+//        BackHandler(onBack = {
+//            playerView.player!!.pause()
+//            navController.navigate(route = "MainScreen")
+//        })
+        mainViewModel.performBackAction {
+            // Define the action to be performed on back
+            playerView.player!!.pause()
+            navController.navigate(route = "MainScreen")
         }
 
         IconButton(
@@ -94,18 +117,18 @@ fun FullscreenTrailerScreen(
 
         AndroidView(
             factory = { playerView },
-            update = {
-                when (lifecycle) {
-                    Lifecycle.Event.ON_PAUSE -> {
-                        it.onPause()
-                        it.player?.pause()
-                    }
-                    Lifecycle.Event.ON_RESUME -> {
-                        it.onResume()
-                    }
-                    else -> Unit
-                }
-            },
+//            update = {
+//                when (lifecycle) {
+//                    Lifecycle.Event.ON_PAUSE -> {
+//                        it.onPause()
+//                        it.player?.pause()
+//                    }
+//                    Lifecycle.Event.ON_RESUME -> {
+//                        it.onResume()
+//                    }
+//                    else -> Unit
+//                }
+//            },
             modifier = Modifier
                 .fillMaxSize()
 //                .rotate(90f)
@@ -114,3 +137,33 @@ fun FullscreenTrailerScreen(
         )
     }
 }
+
+//@Composable
+//fun BackHandler(enabled: Boolean = true, onBack: () -> Unit) {
+//    // Safely update the current `onBack` lambda when a new one is provided
+//    val currentOnBack by rememberUpdatedState(onBack)
+//    // Remember in Composition a back callback that calls the `onBack` lambda
+//    val backCallback = remember {
+//        object : OnBackPressedCallback(enabled) {
+//            override fun handleOnBackPressed() {
+//                currentOnBack()
+//            }
+//        }
+//    }
+//    // On every successful composition, update the callback with the `enabled` value
+//    SideEffect {
+//        backCallback.isEnabled = enabled
+//    }
+//    val backDispatcher = checkNotNull(LocalOnBackPressedDispatcherOwner.current) {
+//        "No OnBackPressedDispatcherOwner was provided via LocalOnBackPressedDispatcherOwner"
+//    }.onBackPressedDispatcher
+//    val lifecycleOwner = LocalLifecycleOwner.current
+//    DisposableEffect(lifecycleOwner, backDispatcher) {
+//        // Add callback to the backDispatcher
+//        backDispatcher.addCallback(lifecycleOwner, backCallback)
+//        // When the effect leaves the Composition, remove the callback
+//        onDispose {
+//            backCallback.remove()
+//        }
+//    }
+//}

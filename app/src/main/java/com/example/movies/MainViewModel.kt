@@ -1,5 +1,6 @@
 package com.example.movies
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -28,6 +29,13 @@ class MainViewModel @Inject constructor(private val savedStateHandle: SavedState
 
     private lateinit var changeOrientationToLandscape: () -> Unit
     private lateinit var changeOrientationToPortrait: () -> Unit
+
+    private val _backAction = MutableLiveData<() -> Unit>()
+    val backAction: LiveData<() -> Unit> = _backAction
+
+    fun performBackAction(action: () -> Unit) {
+        _backAction.value = action
+    }
 
     fun init(currentOrientationLand: Boolean, changeOrientToLand: () -> Unit,
              changeOrientToPort: () -> Unit){

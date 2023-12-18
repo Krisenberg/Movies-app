@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -227,7 +228,7 @@ fun CardItemTrailer(
             .wrapContentSize()
             .animateContentSize(
                 animationSpec = tween(
-                    durationMillis = 300,
+                    durationMillis = 200,
                     easing = LinearOutSlowInEasing
                 )
             ),
@@ -270,11 +271,14 @@ fun CardItemTrailerContent(
     navController: NavController,
     modifier: Modifier
 ){
-    var isExpandedCard by remember { mutableStateOf(expandedState) }
+    var isExpandedThisCard = (mainViewModel.expandedTrailerCardIndex() == itemIndex) &&
+            mainViewModel.isExpandedTrailerCard()
+    var isExpandedCard by remember { mutableStateOf(isExpandedThisCard) }
 
     Column(
         modifier = Modifier
             .fillMaxWidth()
+            .clip(RoundedCornerShape(10.dp))
     ){
         Row (
             modifier
@@ -295,8 +299,9 @@ fun CardItemTrailerContent(
                 painter = painterResource(id = trailerImgID),
                 contentDescription = stringResource(id = R.string.dummy_desc),
                 modifier
-                    .fillMaxWidth(0.45f)
-                    .clip(RoundedCornerShape(10.dp))
+                    .fillMaxWidth(0.45f),
+//                    .clip(RoundedCornerShape(10.dp)),
+//                contentScale = ContentScale.Crop
                 //.size(width = 172.dp, height = 97.dp)
             )
             Text(

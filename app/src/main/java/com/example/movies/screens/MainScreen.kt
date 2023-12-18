@@ -97,12 +97,14 @@ fun MainScreen(
         pagerState.animateScrollToPage(selectedTabIndex)
     }
 
-    LaunchedEffect(pagerState.currentPage, pagerState.isScrollInProgress) {
-        if(!pagerState.isScrollInProgress) {
-            selectedTabIndex = pagerState.currentPage
-            mainViewModel.selectedMainScreenTabIndex(pagerState.currentPage)
-        }
-    }
+//    LaunchedEffect(pagerState.currentPage, pagerState.isScrollInProgress) {
+//        if(!pagerState.isScrollInProgress) {
+//            selectedTabIndex = pagerState.currentPage
+//            mainViewModel.selectedMainScreenTabIndex(pagerState.currentPage)
+//        }
+////        selectedTabIndex = pagerState.currentPage
+////        mainViewModel.selectedMainScreenTabIndex(pagerState.currentPage)
+//    }
 
     Column(
         modifier = Modifier
@@ -156,6 +158,7 @@ fun MainScreen(
                 }
                 if (index == 1) {
                     var isExpandedCard by remember { mutableStateOf(mainViewModel.isExpandedTrailerCard()) }
+//                    var isExpandedCard by remember { mutableStateOf(false) }
                     var expandedCardIndex by remember { mutableIntStateOf(mainViewModel.expandedTrailerCardIndex()) }
                     var showDialog by rememberSaveable { mutableStateOf(false) }
                     var showDialogTrailerID by rememberSaveable { mutableIntStateOf(0) }
@@ -170,18 +173,18 @@ fun MainScreen(
 //                        mainViewModel.expandedTrailerCardIndex(index)
 //                    },
 
-                    val movies = mainViewModel.getMovieTrailers()
-
-                    val context = LocalContext.current
-                    val exoPlayer = ExoPlayer.Builder(context).build()
-                    for (trailerUri in movies) {
-                        val mediaItem = MediaItem.fromUri(trailerUri)
-                        exoPlayer.addMediaItem(mediaItem)
-                    }
-                    exoPlayer.prepare()
-
-                    val playerView = PlayerView(context)
-                    playerView.player = exoPlayer
+//                    val movies = mainViewModel.getMovieTrailers()
+//
+//                    val context = LocalContext.current
+//                    val exoPlayer = ExoPlayer.Builder(context).build()
+//                    for (trailerUri in movies) {
+//                        val mediaItem = MediaItem.fromUri(trailerUri)
+//                        exoPlayer.addMediaItem(mediaItem)
+//                    }
+//                    exoPlayer.prepare()
+//
+//                    val playerView = PlayerView(context)
+//                    playerView.player = exoPlayer
 
                     val trailersImgTitleList = mainViewModel.getMovieTrailersCardsData()
 
@@ -214,14 +217,14 @@ fun MainScreen(
                             }
                         )
                     }
-                    if (showDialog) {
-                        ZoomedTrailerDialog(
-                            player = exoPlayer,
-                            playerView = playerView,
-                            trailerID = showDialogTrailerID,
-                            onDismissRequest = { showDialog = false; exoPlayer.release() }
-                        )
-                    }
+//                    if (showDialog) {
+//                        ZoomedTrailerDialog(
+//                            player = exoPlayer,
+//                            playerView = playerView,
+//                            trailerID = showDialogTrailerID,
+//                            onDismissRequest = { showDialog = false; exoPlayer.release() }
+//                        )
+//                    }
                 }
             }
         }

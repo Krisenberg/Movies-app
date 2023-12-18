@@ -5,13 +5,22 @@ import android.content.res.Configuration
 import android.os.Bundle
 import android.view.OrientationEventListener
 import androidx.activity.ComponentActivity
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -47,6 +56,12 @@ class MainActivity : ComponentActivity() {
                     { requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE },
                     { requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT }
                 )
+
+                val backAction by mainViewModel.backAction.observeAsState()
+
+                if (backAction != null) {
+                    BackHandler(enabled = true, onBack = backAction!!)
+                }
 
 //                mainViewModel.requestedOrientLandscape().observe(this) {
 //                    requestedOrientation = if (it)
@@ -142,6 +157,36 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
+@Composable
+fun BackHandler(enabled: Boolean = true, onBack: () -> Unit) {
+    // Safely update the current `onBack` lambda when a new one is provided
+    val currentOnBack by rememberUpdatedState(onBack)
+    // Remember in Composition a back callback that calls the `onBack` lambda
+    val backCallback = remember {
+        object : OnBackPressedCallback(enabled) {
+            override fun handleOnBackPressed() {
+                currentOnBack()
+            }
+        }
+    }
+    // On every successful composition, update the callback with the `enabled` value
+    SideEffect {
+        backCallback.isEnabled = enabled
+    }
+    val backDispatcher = checkNotNull(LocalOnBackPressedDispatcherOwner.current) {
+        "No OnBackPressedDispatcherOwner was provided via LocalOnBackPressedDispatcherOwner"
+    }.onBackPressedDispatcher
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner, backDispatcher) {
+        // Add callback to the backDispatcher
+        backDispatcher.addCallback(lifecycleOwner, backCallback)
+        // When the effect leaves the Composition, remove the callback
+        onDispose {
+            backCallback.remove()
+        }
+    }
+}
 
 //    override fun onResume() {
 //        super.onResume()
