@@ -380,14 +380,14 @@ fun CardItemTrailerContent(
 
 @androidx.annotation.OptIn(UnstableApi::class) @Composable
 fun ZoomedTrailerDialog(
+    mainViewModel: MainViewModel,
     player: ExoPlayer,
-    playerView: PlayerView,
     trailerID: Int,
     onDismissRequest: () -> Unit,
 ) {
     DisposableEffect(Unit) {
         onDispose {
-            playerView.player!!.pause()
+            mainViewModel.stopPlayerView()
         }
     }
 
@@ -405,8 +405,14 @@ fun ZoomedTrailerDialog(
             },
     ) {
 //        val context = LocalContext.current
+        val context = LocalContext.current
 
+        val playerView = PlayerView(context)
+        playerView.player = player
+        playerView.useController = true
+        playerView.keepScreenOn = true
         player.seekTo(trailerID,0)
+        playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
 
 //        val playerView = PlayerView(context)
 //        playerView.player = player

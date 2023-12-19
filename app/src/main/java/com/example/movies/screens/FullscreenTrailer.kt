@@ -1,5 +1,7 @@
 package com.example.movies.screens
 
+import android.content.res.Configuration
+import android.util.Log
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
@@ -30,11 +32,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.compose.ui.zIndex
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.media3.common.MediaItem
@@ -53,31 +57,97 @@ fun FullscreenTrailerScreen(
     trailerID: Int,
     modifier: Modifier = Modifier
 ){
-    Column(
-        modifier =
-            modifier
-                .fillMaxSize(1f),
-        verticalArrangement = Arrangement.spacedBy((-8).dp)
-    ){
-        val movies = mainViewModel.getMovieTrailers()
+    Log.d("MyInfo", "FULLSCREEN")
 
-        val context = LocalContext.current
-        val exoPlayer = ExoPlayer.Builder(context).build()
-        for (trailerUri in movies) {
-            val mediaItem = MediaItem.fromUri(trailerUri)
-            exoPlayer.addMediaItem(mediaItem)
+//    val player = mainViewModel.getPlayer(trailerID)
+//    val context = LocalContext.current
+//
+//    val playerView = PlayerView(context)
+//    playerView.player = player
+//    playerView.useController = true
+//    playerView.keepScreenOn = true
+
+    val playerView = mainViewModel.getPlayerView(trailerID)
+    val orientation = LocalConfiguration.current.orientation
+
+    when (orientation) {
+        Configuration.ORIENTATION_LANDSCAPE -> {
+            playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
         }
-        exoPlayer.prepare()
+        // Other wise
+        else -> {
+            playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
+        }
+    }
 
-        val playerView = PlayerView(context)
-        playerView.player = exoPlayer
-        exoPlayer.seekTo(trailerID,0)
+    playerView.player!!.playWhenReady = true
+
+//    fun getPlayerView(trailerID: Int): PlayerView {
+//        player!!.prepare()
+//
+//        val playerView = PlayerView(application.applicationContext)
+//        playerView.player = player!!
+//
+////        val playerView = PlayerView(context)
+////        playerView.player = player
+//        playerView.useController = true
+//        playerView.keepScreenOn = true
+//        player!!.seekTo(trailerID,0)
+//        return playerView
+//    }
+//
+//    val playerView = mainViewModel.getPlayerView(trailerID)
+//    playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
+//    mainViewModel.stopPlayerView()
+//    playerView.player!!.prepare()
+
+    AndroidView(
+        factory = { playerView },
+//            update = {
+//                when (lifecycle) {
+//                    Lifecycle.Event.ON_PAUSE -> {
+//                        it.onPause()
+//                        it.player?.pause()
+//                    }
+//                    Lifecycle.Event.ON_RESUME -> {
+//                        it.onResume()
+//                    }
+//                    else -> Unit
+//                }
+//            },
+        modifier = Modifier
+            .fillMaxSize()
+//                .rotate(90f)
+//                .fillMaxSize()
+//                .aspectRatio(16 / 9f)
+    )
+//    Column(
+//        modifier =
+//            modifier
+//                .fillMaxSize(1f),
+//        verticalArrangement = Arrangement.spacedBy((-8).dp)
+//    ){
+//        val movies = mainViewModel.getMovieTrailers()
+//
+//        val context = LocalContext.current
+//        val exoPlayer = ExoPlayer.Builder(context).build()
+//        for (trailerUri in movies) {
+//            val mediaItem = MediaItem.fromUri(trailerUri)
+//            exoPlayer.addMediaItem(mediaItem)
+//        }
+//        exoPlayer.prepare()
+//
+//        val playerView = PlayerView(context)
+//        playerView.player = exoPlayer
+//        exoPlayer.seekTo(trailerID,0)
 
 //        val playerView = PlayerView(context)
 //        playerView.player = player
-        playerView.useController = true
-        playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
-        playerView.keepScreenOn = true
+//        playerView.useController = true
+//        val playerView = mainViewModel.getPlayerView(trailerID)
+//        playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
+//        mainViewModel.stopPlayerView()
+//        playerView.keepScreenOn = true
 
 //        var lifecycle by remember {
 //            mutableStateOf(Lifecycle.Event.ON_CREATE)
@@ -93,30 +163,30 @@ fun FullscreenTrailerScreen(
 //            playerView.player!!.pause()
 //            navController.navigate(route = "MainScreen")
 //        })
-        mainViewModel.performBackAction {
-            // Define the action to be performed on back
-            playerView.player!!.pause()
-            navController.navigate(route = "MainScreen")
-        }
+//        mainViewModel.performBackAction {
+//            // Define the action to be performed on back
+//            playerView.player!!.pause()
+//            navController.navigate(route = "MainScreen")
+//        }
 
-        IconButton(
-            modifier = Modifier
-                .alpha(0.8f)
-                .weight(1f),
-            onClick = {
-                playerView.player!!.pause()
-                navController.navigate(route = "MainScreen")
-            }) {
-            Icon(
-                imageVector = Icons.Default.ArrowBack,
-                contentDescription = "Back arrow",
-                modifier = Modifier.size(48.dp),
+//        IconButton(
+//            modifier = Modifier
+//                .alpha(0.8f)
+//                .weight(1f),
+//            onClick = {
+//                playerView.player!!.pause()
+//                navController.navigate(route = "MainScreen")
+//            }) {
+//            Icon(
+//                imageVector = Icons.Default.ArrowBack,
+//                contentDescription = "Back arrow",
+//                modifier = Modifier.size(48.dp),
 //                tint = Color.White
-            )
-        }
-
-        AndroidView(
-            factory = { playerView },
+//            )
+//        }
+//
+//        AndroidView(
+//            factory = { playerView },
 //            update = {
 //                when (lifecycle) {
 //                    Lifecycle.Event.ON_PAUSE -> {
@@ -129,13 +199,13 @@ fun FullscreenTrailerScreen(
 //                    else -> Unit
 //                }
 //            },
-            modifier = Modifier
-                .fillMaxSize()
+//            modifier = Modifier
+//                .fillMaxSize()
 //                .rotate(90f)
 //                .fillMaxSize()
 //                .aspectRatio(16 / 9f)
-        )
-    }
+//        )
+//    }
 }
 
 //@Composable

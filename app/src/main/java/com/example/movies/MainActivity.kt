@@ -57,11 +57,11 @@ class MainActivity : ComponentActivity() {
                     { requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT }
                 )
 
-                val backAction by mainViewModel.backAction.observeAsState()
-
-                if (backAction != null) {
-                    BackHandler(enabled = true, onBack = backAction!!)
-                }
+//                val backAction by mainViewModel.backAction.observeAsState()
+//
+//                if (backAction != null) {
+//                    BackHandler(enabled = true, onBack = backAction!!)
+//                }
 
 //                mainViewModel.requestedOrientLandscape().observe(this) {
 //                    requestedOrientation = if (it)

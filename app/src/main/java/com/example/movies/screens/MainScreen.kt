@@ -1,5 +1,6 @@
 package com.example.movies.screens
 
+import android.util.Log
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
@@ -75,6 +76,8 @@ fun MainScreen(
     mainViewModel: MainViewModel,
     modifier: Modifier = Modifier
 ){
+    Log.d("MyInfo", "MAIN SCREEN")
+    mainViewModel.stopPlayerView()
     val tabItems = listOf(
         TabItem(
             title = "Details",
@@ -97,14 +100,14 @@ fun MainScreen(
         pagerState.animateScrollToPage(selectedTabIndex)
     }
 
-//    LaunchedEffect(pagerState.currentPage, pagerState.isScrollInProgress) {
+    LaunchedEffect(pagerState.currentPage, pagerState.isScrollInProgress) {
 //        if(!pagerState.isScrollInProgress) {
 //            selectedTabIndex = pagerState.currentPage
 //            mainViewModel.selectedMainScreenTabIndex(pagerState.currentPage)
 //        }
-////        selectedTabIndex = pagerState.currentPage
-////        mainViewModel.selectedMainScreenTabIndex(pagerState.currentPage)
-//    }
+        selectedTabIndex = pagerState.currentPage
+        mainViewModel.selectedMainScreenTabIndex(pagerState.currentPage)
+    }
 
     Column(
         modifier = Modifier
@@ -217,14 +220,15 @@ fun MainScreen(
                             }
                         )
                     }
-//                    if (showDialog) {
-//                        ZoomedTrailerDialog(
-//                            player = exoPlayer,
-//                            playerView = playerView,
-//                            trailerID = showDialogTrailerID,
-//                            onDismissRequest = { showDialog = false; exoPlayer.release() }
-//                        )
-//                    }
+                    if (showDialog) {
+                        val exoPlayer = mainViewModel.getPlayer(trailerID = showDialogTrailerID)
+                        ZoomedTrailerDialog(
+                            mainViewModel = mainViewModel,
+                            player = exoPlayer,
+                            trailerID = showDialogTrailerID,
+                            onDismissRequest = { showDialog = false; exoPlayer.release() }
+                        )
+                    }
                 }
             }
         }

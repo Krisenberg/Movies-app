@@ -1,32 +1,34 @@
 package com.example.movies
 
+import android.app.Application
+import android.content.Context
+import android.content.res.Configuration
+import android.util.Log
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.media3.common.MediaItem
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.ui.AspectRatioFrameLayout
+import androidx.media3.ui.PlayerView
+import dagger.hilt.android.internal.Contexts.getApplication
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor(private val savedStateHandle: SavedStateHandle) : ViewModel(){
-//    private var previousOrientLandscape : Boolean? = null
-//    private val _requestedOrientLandscape: MutableLiveData<Boolean> = MutableLiveData<Boolean>()
-//
-//    fun init(currentOrientationLand: Boolean) {
-//        previousOrientLandscape =
-//            savedStateHandle.get<Boolean>("previousOrientLandscape") ?: currentOrientationLand
-//        _requestedOrientLandscape.value =
-//            savedStateHandle.get<Boolean>("_requestedOrientLandscape") ?: currentOrientationLand
-////        previousOrientLandscape = if (previousOrientLandscape==null) currentOrientationLand else previousOrientLandscape
-//    }
-
+class MainViewModel @Inject constructor(private val savedStateHandle: SavedStateHandle, private val application: Application) : ViewModel(){
     private var previousOrientLandscape = savedStateHandle.get<Boolean>("previousOrientLandscape")
     private var currentOrientLandscape = savedStateHandle.get<Boolean>("currentOrientLandscape")
     private val _requestedOrientLandscape = savedStateHandle.getLiveData<Boolean>("_requestedOrientLandscape", false)
     private var _selectedMainScreenTabIndex = savedStateHandle.get<Int>("_selectedMainScreenTabIndex")
     private var _isExpandedTrailerCard = savedStateHandle.get<Boolean>("_isExpandedTrailerCard")
     private var _expandedTrailerCardIndex = savedStateHandle.get<Int>("_ExpandedTrailerCardIndex")
+    private var player = savedStateHandle.get<ExoPlayer>("player")
 
+//    private lateinit var player: ExoPlayer
+//    private lateinit var playerView: PlayerView
     private lateinit var changeOrientationToLandscape: () -> Unit
     private lateinit var changeOrientationToPortrait: () -> Unit
 
@@ -50,6 +52,70 @@ class MainViewModel @Inject constructor(private val savedStateHandle: SavedState
 
         changeOrientationToLandscape = changeOrientToLand
         changeOrientationToPortrait = changeOrientToPort
+
+        if (player == null) {
+            player = ExoPlayer.Builder(application.applicationContext).build()
+            val movies = getMovieTrailers()
+            for (trailerUri in movies) {
+                val mediaItem = MediaItem.fromUri(trailerUri)
+                player!!.addMediaItem(mediaItem)
+            }
+        }
+    }
+
+//    fun getPlayerView(trailerID: Int): PlayerView {
+//        player!!.prepare()
+//
+//        val playerView = PlayerView(application.applicationContext)
+//        playerView.player = player!!
+//
+////        val playerView = PlayerView(context)
+////        playerView.player = player
+//        playerView.useController = true
+//        playerView.keepScreenOn = true
+//        player!!.seekTo(trailerID,0)
+//        return playerView
+//    }
+
+    fun getPlayer(trailerID: Int): ExoPlayer {
+//        val player = ExoPlayer.Builder(application.applicationContext).build()
+//        val movies = getMovieTrailers()
+//        for (trailerUri in movies) {
+//            val mediaItem = MediaItem.fromUri(trailerUri)
+//            player!!.addMediaItem(mediaItem)
+//        }
+//        if (player != null)
+//            player!!.release()
+
+        if (player == null) {
+            player = ExoPlayer.Builder(application.applicationContext).build()
+            val movies = getMovieTrailers()
+            for (trailerUri in movies) {
+                val mediaItem = MediaItem.fromUri(trailerUri)
+                player!!.addMediaItem(mediaItem)
+            }
+        } else {
+            player!!.stop()
+        }
+        player!!.prepare()
+        player!!.seekTo(trailerID,0)
+        return player!!
+    }
+
+    fun getPlayerView(trailerID: Int): PlayerView {
+        player = getPlayer(trailerID)
+
+        val playerView = PlayerView(application.applicationContext)
+        playerView.player = player
+        playerView.useController = true
+        playerView.keepScreenOn = true
+
+        return playerView
+    }
+
+    fun stopPlayerView(){
+        if (player != null)
+            player!!.stop()
     }
 
     fun requestedOrientLandscape(): MutableLiveData<Boolean> { return _requestedOrientLandscape }
