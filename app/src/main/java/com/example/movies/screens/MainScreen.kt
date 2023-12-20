@@ -9,11 +9,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ContentPasteSearch
 import androidx.compose.material.icons.filled.VideoLibrary
@@ -35,8 +38,10 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -130,8 +135,6 @@ fun MainScreen(
                     }
                 }
                 if (index == 1) {
-                    var isExpandedCard by remember { mutableStateOf(false) }
-                    var expandedCardIndex by remember { mutableIntStateOf(0) }
                     var showDialog by rememberSaveable { mutableStateOf(false) }
                     var showDialogTrailerID by rememberSaveable { mutableIntStateOf(0) }
 
@@ -145,19 +148,9 @@ fun MainScreen(
                             },
                             itemContent = { itemIndex ->
                                 CardItemTrailer(
-                                    mainViewModel = mainViewModel,
                                     trailerImgID = trailersImgTitleList[itemIndex].first,
                                     movieTitleID = trailersImgTitleList[itemIndex].second,
                                     itemIndex = itemIndex,
-                                    expandedState = isExpandedCard,
-                                    isExpandedCardChange = {
-                                        isExpandedCard = !isExpandedCard
-//                                        mainViewModel.isExpandedTrailerCard(!isExpandedCard)
-                                    },
-                                    expandedCardIndex = { newIndex ->
-                                        expandedCardIndex = newIndex
-//                                        mainViewModel.expandedTrailerCardIndex(newIndex)
-                                    },
                                     onShowDialogChange = { showDialog = true },
                                     onShowDialogTrailerIDChange = { newValue -> showDialogTrailerID = newValue },
                                     navController = navController,
@@ -177,43 +170,6 @@ fun MainScreen(
             }
         }
     }
-///////////////////////////////////////////////////////
-//    Scaffold(
-//        modifier = Modifier
-//            .fillMaxSize(),
-//        topBar = {
-//            TopAppBar(
-//                title = {
-//                    Text(text = stringResource(id = R.string.list_header), fontSize = 24.sp)
-//                },
-//                navigationIcon = {
-//                    IconButton(onClick = {
-//                        mainViewModel.setOrientLand()
-//                        navController.navigate(route = "TrailerScreen")
-//                    }) {
-//                        Icon(
-//                            imageVector = Icons.Default.ArrowBack,
-//                            contentDescription = "Go back"
-//                        )
-//                    }
-//                }
-//            )
-//        },
-//    ){ values ->
-//        val moviesImgTitleList = mainViewModel.getMoviesImagesTitles()
-//        LazyColumn(contentPadding = values) {
-//            val itemCount = moviesImgTitleList.size
-//            items(itemCount) {
-//                ColumnItem(
-//                    movieImgID = moviesImgTitleList[it].first,
-//                    movieTitleID = moviesImgTitleList[it].second,
-//                    itemIndex = it,
-//                    navController = navController,
-//                    modifier = modifier)
-//            }
-//        }
-//    }
-//////////////////////////////////////////////////////
 }
 
 @Composable
@@ -244,8 +200,12 @@ fun ColumnItem(
             Image(
                 painter = painterResource(id = movieImgID),
                 contentDescription = "Movie image",
-                modifier
-                    .fillMaxWidth(0.5f)
+                contentScale = ContentScale.Crop,
+                modifier = modifier
+                    .width(150.dp)
+                    .height(120.dp)
+                    .clip(RoundedCornerShape(10.dp))
+//                    .fillMaxWidth(0.5f)
             )
             Text(
                 text = stringResource(id = movieTitleID),

@@ -16,7 +16,7 @@ import androidx.navigation.navArgument
 import com.example.movies.screens.DetailsScreen
 import com.example.movies.screens.FullscreenTrailerScreen
 import com.example.movies.screens.MainScreen
-import com.example.movies.screens.TrailerScreen
+//import com.example.movies.screens.TrailerScreen
 import com.example.movies.ui.theme.MoviesTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -45,9 +45,9 @@ class MainActivity : ComponentActivity() {
                         composable(route = "MainScreen") {
                             MainScreen(navController, mainViewModel)
                         }
-                        composable(route = "TrailerScreen") {
-                            TrailerScreen(navController, mainViewModel)
-                        }
+//                        composable(route = "TrailerScreen") {
+//                            TrailerScreen(navController, mainViewModel)
+//                        }
                         composable(route = "DetailsScreen/{index}",
                             arguments = listOf(
                                 navArgument(name = "index") {
