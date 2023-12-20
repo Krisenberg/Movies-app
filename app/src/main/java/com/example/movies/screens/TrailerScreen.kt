@@ -1,6 +1,7 @@
 package com.example.movies.screens
 
 import android.content.Context
+import android.content.res.Configuration
 import android.media.browse.MediaBrowser
 import android.net.VpnService.prepare
 import android.os.Bundle
@@ -381,15 +382,14 @@ fun CardItemTrailerContent(
 @androidx.annotation.OptIn(UnstableApi::class) @Composable
 fun ZoomedTrailerDialog(
     mainViewModel: MainViewModel,
-    player: ExoPlayer,
     trailerID: Int,
     onDismissRequest: () -> Unit,
 ) {
-    DisposableEffect(Unit) {
-        onDispose {
-            mainViewModel.stopPlayerView()
-        }
-    }
+//    DisposableEffect(Unit) {
+//        onDispose {
+//            mainViewModel.stopPlayerView()
+//        }
+//    }
 
     Dialog(
             onDismissRequest = {
@@ -405,39 +405,34 @@ fun ZoomedTrailerDialog(
             },
     ) {
 //        val context = LocalContext.current
-        val context = LocalContext.current
-
-        val playerView = PlayerView(context)
-        playerView.player = player
-        playerView.useController = true
-        playerView.keepScreenOn = true
-        player.seekTo(trailerID,0)
-        playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
-
+//        val context = LocalContext.current
+//
 //        val playerView = PlayerView(context)
 //        playerView.player = player
-        playerView.useController = true
-        playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
-        playerView.keepScreenOn = true
+//        playerView.useController = true
+//        playerView.keepScreenOn = true
+//        player.seekTo(trailerID,0)
+//        playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
+//
+////        val playerView = PlayerView(context)
+////        playerView.player = player
+//        playerView.useController = true
+//        playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
+//        playerView.keepScreenOn = true
 
         var lifecycle by remember {
             mutableStateOf(Lifecycle.Event.ON_CREATE)
         }
 
         AndroidView(
-            factory = { playerView },
-            update = {
-                when (lifecycle) {
-                    Lifecycle.Event.ON_PAUSE -> {
-                        it.onPause()
-                        it.player?.pause()
-                    }
-                    Lifecycle.Event.ON_RESUME -> {
-                        it.onResume()
-                    }
-                    else -> Unit
-                }
-            },
+            factory = { context ->
+                PlayerView(context).also {
+                    it.player = mainViewModel.player
+                    (it.player as ExoPlayer).seekTo(trailerID,0)
+                    it.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
+                    it.useController = true
+                    (it.player as ExoPlayer).playWhenReady = true
+                } },
             modifier = Modifier
                 .aspectRatio(16 / 9f)
         )

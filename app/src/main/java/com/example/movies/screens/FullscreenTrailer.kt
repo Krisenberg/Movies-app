@@ -23,6 +23,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -57,6 +58,7 @@ fun FullscreenTrailerScreen(
     trailerID: Int,
     modifier: Modifier = Modifier
 ){
+//    mainViewModel.init2()
     Log.d("MyInfo", "FULLSCREEN")
 
 //    val player = mainViewModel.getPlayer(trailerID)
@@ -66,21 +68,39 @@ fun FullscreenTrailerScreen(
 //    playerView.player = player
 //    playerView.useController = true
 //    playerView.keepScreenOn = true
+    val videoItem = mainViewModel.mediaItems.collectAsState()
 
-    val playerView = mainViewModel.getPlayerView(trailerID)
-    val orientation = LocalConfiguration.current.orientation
+//    val playerView = mainViewModel.getPlayerView(trailerID)
+//
+//    when (LocalConfiguration.current.orientation) {
+//        Configuration.ORIENTATION_LANDSCAPE -> {
+//            playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+//        }
+//        // Other wise
+//        else -> {
+//            playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
+//        }
+//    }
+//
 
-    when (orientation) {
-        Configuration.ORIENTATION_LANDSCAPE -> {
-            playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
-        }
-        // Other wise
-        else -> {
-            playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
-        }
+    val orient = LocalConfiguration.current.orientation
+    var lifecycle by remember {
+        mutableStateOf(Lifecycle.Event.ON_CREATE)
     }
 
-    playerView.player!!.playWhenReady = true
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            lifecycle = event
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+
+        onDispose {
+            mainViewModel.player.pause()
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
 
 //    fun getPlayerView(trailerID: Int): PlayerView {
 //        player!!.prepare()
@@ -102,19 +122,32 @@ fun FullscreenTrailerScreen(
 //    playerView.player!!.prepare()
 
     AndroidView(
-        factory = { playerView },
-//            update = {
-//                when (lifecycle) {
-//                    Lifecycle.Event.ON_PAUSE -> {
-//                        it.onPause()
-//                        it.player?.pause()
-//                    }
-//                    Lifecycle.Event.ON_RESUME -> {
-//                        it.onResume()
-//                    }
-//                    else -> Unit
-//                }
-//            },
+        factory = { context ->
+            PlayerView(context).also {
+                it.player = mainViewModel.player
+                (it.player as ExoPlayer).seekTo(trailerID,0)
+                when (orient) {
+                    Configuration.ORIENTATION_LANDSCAPE -> {
+                        it.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+                    }
+                    else -> {
+                        it.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
+                    }
+                }
+            }
+        },
+            update = {
+                when (lifecycle) {
+                    Lifecycle.Event.ON_PAUSE -> {
+                        it.onPause()
+                        it.player?.pause()
+                    }
+                    Lifecycle.Event.ON_RESUME -> {
+                        it.onResume()
+                    }
+                    else -> Unit
+                }
+            },
         modifier = Modifier
             .fillMaxSize()
 //                .rotate(90f)

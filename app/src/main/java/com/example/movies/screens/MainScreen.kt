@@ -77,7 +77,7 @@ fun MainScreen(
     modifier: Modifier = Modifier
 ){
     Log.d("MyInfo", "MAIN SCREEN")
-    mainViewModel.stopPlayerView()
+//    mainViewModel.stopPlayerView()
     val tabItems = listOf(
         TabItem(
             title = "Details",
@@ -101,12 +101,12 @@ fun MainScreen(
     }
 
     LaunchedEffect(pagerState.currentPage, pagerState.isScrollInProgress) {
-//        if(!pagerState.isScrollInProgress) {
-//            selectedTabIndex = pagerState.currentPage
-//            mainViewModel.selectedMainScreenTabIndex(pagerState.currentPage)
-//        }
-        selectedTabIndex = pagerState.currentPage
-        mainViewModel.selectedMainScreenTabIndex(pagerState.currentPage)
+        if(!pagerState.isScrollInProgress) {
+            selectedTabIndex = pagerState.currentPage
+            mainViewModel.selectedMainScreenTabIndex(pagerState.currentPage)
+        }
+//        selectedTabIndex = pagerState.currentPage
+//        mainViewModel.selectedMainScreenTabIndex(pagerState.currentPage)
     }
 
     Column(
@@ -221,12 +221,10 @@ fun MainScreen(
                         )
                     }
                     if (showDialog) {
-                        val exoPlayer = mainViewModel.getPlayer(trailerID = showDialogTrailerID)
                         ZoomedTrailerDialog(
                             mainViewModel = mainViewModel,
-                            player = exoPlayer,
                             trailerID = showDialogTrailerID,
-                            onDismissRequest = { showDialog = false; exoPlayer.release() }
+                            onDismissRequest = { showDialog = false; mainViewModel.player.pause() }
                         )
                     }
                 }

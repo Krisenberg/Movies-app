@@ -51,11 +51,7 @@ class MainActivity : ComponentActivity() {
 
                 val isOrientLandscape = requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
 
-                mainViewModel.init(
-                    isOrientLandscape,
-                    { requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE },
-                    { requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT }
-                )
+                mainViewModel.loadVideoUris()
 
 //                val backAction by mainViewModel.backAction.observeAsState()
 //
@@ -70,7 +66,7 @@ class MainActivity : ComponentActivity() {
 //                        ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 //                }
 
-                videoPlayer = ExoPlayer.Builder(this).build()
+//                videoPlayer = ExoPlayer.Builder(this).build()
 
 //                val orientationEventListener = object : OrientationEventListener(this) {
 //                    override fun onOrientationChanged(orientation: Int) {
