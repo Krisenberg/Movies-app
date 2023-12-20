@@ -222,7 +222,6 @@ fun CardItemTrailer(
     navController: NavController,
     modifier: Modifier
 ){
-    var isExpandedCard by remember { mutableStateOf(expandedState) }
     Card(
         modifier
             .padding(8.dp)
@@ -233,14 +232,10 @@ fun CardItemTrailer(
                     easing = LinearOutSlowInEasing
                 )
             ),
-//            .clickable {
-//                onShowDialogChange(true)
-//                onShowDialogTrailerIDChange(itemIndex)
-//            },
         colors = CardDefaults.cardColors(
             containerColor = Color.White
         ),
-        elevation = CardDefaults.cardElevation(10.dp)
+//        elevation = CardDefaults.cardElevation(10.dp)
     ) {
         CardItemTrailerContent(
             mainViewModel = mainViewModel,
@@ -272,23 +267,22 @@ fun CardItemTrailerContent(
     navController: NavController,
     modifier: Modifier
 ){
-    var isExpandedThisCard = (mainViewModel.expandedTrailerCardIndex() == itemIndex) &&
-            mainViewModel.isExpandedTrailerCard()
-    var isExpandedCard by remember { mutableStateOf(isExpandedThisCard) }
+    var isExpandedCard by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(10.dp))
+//            .fillMaxWidth()
+//            .clip(RoundedCornerShape(10.dp))
+            .wrapContentSize()
     ){
         Row (
             modifier
-                .fillMaxWidth()
+                .wrapContentSize()
                 .clickable {
                     //navController.navigate(route = "DetailsScreen/$itemIndex")
                     isExpandedCard = !isExpandedCard
-                    isExpandedCardChange()
-                    expandedCardIndexChange(itemIndex)
+//                    isExpandedCardChange()
+//                    expandedCardIndexChange(itemIndex)
                 },
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(4.dp)
@@ -319,8 +313,8 @@ fun CardItemTrailerContent(
                     .rotate(rotationState),
                 onClick = {
                     isExpandedCard = !isExpandedCard
-                    isExpandedCardChange()
-                    expandedCardIndexChange(itemIndex)
+//                    isExpandedCardChange()
+//                    expandedCardIndexChange(itemIndex)
                 }) {
                 Icon(
                     imageVector = Icons.Default.ArrowDropDown,
@@ -332,8 +326,9 @@ fun CardItemTrailerContent(
         if (isExpandedCard) {
             Row (
                 modifier
-                    .fillMaxWidth()
-                    .padding(top = 12.dp),
+//                    .fillMaxWidth()
+//                    .padding(top = 12.dp),
+                    .wrapContentSize(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(4.dp)
             ){

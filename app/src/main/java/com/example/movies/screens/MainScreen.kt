@@ -1,10 +1,5 @@
 package com.example.movies.screens
 
-import android.util.Log
-import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.LinearOutSlowInEasing
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -20,64 +15,43 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ContentPasteSearch
 import androidx.compose.material.icons.filled.VideoLibrary
 import androidx.compose.material.icons.outlined.ContentPasteSearch
-import androidx.compose.material.icons.outlined.Details
 import androidx.compose.material.icons.outlined.VideoLibrary
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.media3.common.MediaItem
-import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.ui.PlayerView
 import androidx.navigation.NavController
-import com.example.movies.ContentManager
 import com.example.movies.MainViewModel
-import com.example.movies.R
-import com.google.android.material.tabs.TabItem
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MainScreen(
     navController: NavController,
     mainViewModel: MainViewModel,
     modifier: Modifier = Modifier
 ){
-    Log.d("MyInfo", "MAIN SCREEN")
-//    mainViewModel.stopPlayerView()
     val tabItems = listOf(
         TabItem(
             title = "Details",
@@ -91,7 +65,7 @@ fun MainScreen(
         )
     )
 
-    var selectedTabIndex by remember { mutableIntStateOf(mainViewModel.selectedMainScreenTabIndex()) }
+    var selectedTabIndex by remember { mutableIntStateOf(mainViewModel.getSelectedMainScreenTabIndex()) }
     val pagerState = rememberPagerState {
         tabItems.size
     }
@@ -100,13 +74,9 @@ fun MainScreen(
         pagerState.animateScrollToPage(selectedTabIndex)
     }
 
-    LaunchedEffect(pagerState.currentPage, pagerState.isScrollInProgress) {
-        if(!pagerState.isScrollInProgress) {
-            selectedTabIndex = pagerState.currentPage
-            mainViewModel.selectedMainScreenTabIndex(pagerState.currentPage)
-        }
-//        selectedTabIndex = pagerState.currentPage
-//        mainViewModel.selectedMainScreenTabIndex(pagerState.currentPage)
+    LaunchedEffect(pagerState.currentPage) {
+        selectedTabIndex = pagerState.currentPage
+        mainViewModel.setSelectedMainScreenTabIndex(pagerState.currentPage)
     }
 
     Column(
@@ -118,7 +88,7 @@ fun MainScreen(
                 Tab(
                     selected = index == selectedTabIndex,
                     onClick = {
-                        mainViewModel.selectedMainScreenTabIndex(index)
+                        mainViewModel.setSelectedMainScreenTabIndex(index)
                         selectedTabIndex = index
                     },
                     text = {
@@ -160,34 +130,10 @@ fun MainScreen(
                     }
                 }
                 if (index == 1) {
-                    var isExpandedCard by remember { mutableStateOf(mainViewModel.isExpandedTrailerCard()) }
-//                    var isExpandedCard by remember { mutableStateOf(false) }
-                    var expandedCardIndex by remember { mutableIntStateOf(mainViewModel.expandedTrailerCardIndex()) }
+                    var isExpandedCard by remember { mutableStateOf(false) }
+                    var expandedCardIndex by remember { mutableIntStateOf(0) }
                     var showDialog by rememberSaveable { mutableStateOf(false) }
                     var showDialogTrailerID by rememberSaveable { mutableIntStateOf(0) }
-
-//                    expandedState = mainViewModel.isExpandedTrailerCard(),
-//                    isExpandedCardChange = {
-//                        isExpandedCard = !isExpandedCard
-//                        mainViewModel.isExpandedTrailerCard(!isExpandedCard)
-//                    },
-//                    expandedCardIndex = {index ->
-//                        expandedCardIndex = index
-//                        mainViewModel.expandedTrailerCardIndex(index)
-//                    },
-
-//                    val movies = mainViewModel.getMovieTrailers()
-//
-//                    val context = LocalContext.current
-//                    val exoPlayer = ExoPlayer.Builder(context).build()
-//                    for (trailerUri in movies) {
-//                        val mediaItem = MediaItem.fromUri(trailerUri)
-//                        exoPlayer.addMediaItem(mediaItem)
-//                    }
-//                    exoPlayer.prepare()
-//
-//                    val playerView = PlayerView(context)
-//                    playerView.player = exoPlayer
 
                     val trailersImgTitleList = mainViewModel.getMovieTrailersCardsData()
 
@@ -206,11 +152,11 @@ fun MainScreen(
                                     expandedState = isExpandedCard,
                                     isExpandedCardChange = {
                                         isExpandedCard = !isExpandedCard
-                                        mainViewModel.isExpandedTrailerCard(!isExpandedCard)
+//                                        mainViewModel.isExpandedTrailerCard(!isExpandedCard)
                                     },
                                     expandedCardIndex = { newIndex ->
                                         expandedCardIndex = newIndex
-                                        mainViewModel.expandedTrailerCardIndex(newIndex)
+//                                        mainViewModel.expandedTrailerCardIndex(newIndex)
                                     },
                                     onShowDialogChange = { showDialog = true },
                                     onShowDialogTrailerIDChange = { newValue -> showDialogTrailerID = newValue },
