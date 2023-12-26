@@ -28,21 +28,24 @@ fun FullscreenTrailerScreen(
 ){
 
     val orient = LocalConfiguration.current.orientation
-    var lifecycle by remember {
-        mutableStateOf(Lifecycle.Event.ON_CREATE)
-    }
+//    var lifecycle by remember {
+//        mutableStateOf(Lifecycle.Event.ON_CREATE)
+//    }
 
     val lifecycleOwner = LocalLifecycleOwner.current
 
     DisposableEffect(lifecycleOwner) {
-        val observer = LifecycleEventObserver { _, event ->
-            lifecycle = event
-        }
-        lifecycleOwner.lifecycle.addObserver(observer)
+//        val observer = LifecycleEventObserver { _, event ->
+//            lifecycle = event
+//        }
+//        lifecycleOwner.lifecycle.addObserver(observer)
 
         onDispose {
             mainViewModel.player.pause()
-            lifecycleOwner.lifecycle.removeObserver(observer)
+            mainViewModel.setLastPlayedTrailerOrientation(orient)
+            mainViewModel.setLastPlayedTrailerPosition(mainViewModel.player.currentPosition)
+            mainViewModel.setLastPlayedTrailerID(mainViewModel.player.currentMediaItemIndex)
+//            lifecycleOwner.lifecycle.removeObserver(observer)
         }
     }
 
@@ -50,7 +53,12 @@ fun FullscreenTrailerScreen(
         factory = { context ->
             PlayerView(context).also {
                 it.player = mainViewModel.player
-                (it.player as ExoPlayer).seekTo(trailerID,0)
+                var playerPos: Long = 0
+                if (mainViewModel.getLastPlayedTrailerOrientation() != orient)
+                    playerPos = mainViewModel.getLastPlayedTrailerPosition()
+
+                var mediaItemIndex = if (mainViewModel.getLastPlayedTrailerID() == -1) trailerID else mainViewModel.getLastPlayedTrailerID()
+                (it.player as ExoPlayer).seekTo(mediaItemIndex,playerPos)
                 when (orient) {
                     Configuration.ORIENTATION_LANDSCAPE -> {
                         it.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
@@ -59,20 +67,21 @@ fun FullscreenTrailerScreen(
                         it.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
                     }
                 }
+                (it.player as ExoPlayer).playWhenReady = true
             }
         },
-            update = {
-                when (lifecycle) {
-                    Lifecycle.Event.ON_PAUSE -> {
-                        it.onPause()
-                        it.player?.pause()
-                    }
-                    Lifecycle.Event.ON_RESUME -> {
-                        it.onResume()
-                    }
-                    else -> Unit
-                }
-            },
+//        update = {
+//            when (lifecycle) {
+//                Lifecycle.Event.ON_PAUSE -> {
+//                    it.onPause()
+//                    it.player?.pause()
+//                }
+//                Lifecycle.Event.ON_RESUME -> {
+//                    it.onResume()
+//                }
+//                else -> Unit
+//            }
+//        },
         modifier = Modifier
             .fillMaxSize()
     )

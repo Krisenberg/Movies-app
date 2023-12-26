@@ -1,4 +1,6 @@
 import org.jetbrains.kotlin.kapt3.base.Kapt.kapt
+import java.util.Properties
+import java.io.FileInputStream
 
 plugins {
     id("com.android.application")
@@ -7,16 +9,25 @@ plugins {
     id("com.google.dagger.hilt.android")
 }
 
+val localProperties = Properties()
+localProperties.load(FileInputStream(rootProject.file("local.properties")))
+
 android {
     namespace = "com.example.movies"
     compileSdk = 34
 
     signingConfigs {
+//        create("release") {
+//            storeFile = file(project.property("RELEASE_STORE_FILE")!!)
+//            storePassword = project.property("RELEASE_STORE_PASSWORD") as String
+//            keyAlias = project.property("RELEASE_KEY_ALIAS") as String
+//            keyPassword = project.property("RELEASE_KEY_PASSWORD") as String
+//        }
         create("release") {
-            storeFile = file(project.property("RELEASE_STORE_FILE")!!)
-            storePassword = project.property("RELEASE_STORE_PASSWORD") as String
-            keyAlias = project.property("RELEASE_KEY_ALIAS") as String
-            keyPassword = project.property("RELEASE_KEY_PASSWORD") as String
+            storeFile = file(localProperties.getProperty("RELEASE_STORE_FILE"))
+            storePassword = localProperties.getProperty("RELEASE_STORE_PASSWORD")
+            keyAlias = localProperties.getProperty("RELEASE_KEY_ALIAS")
+            keyPassword = localProperties.getProperty("RELEASE_KEY_PASSWORD")
         }
     }
 

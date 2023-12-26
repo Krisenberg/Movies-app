@@ -34,6 +34,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -49,6 +50,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.movies.MainViewModel
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -75,13 +77,31 @@ fun MainScreen(
         tabItems.size
     }
 
-    LaunchedEffect(selectedTabIndex) {
-        pagerState.animateScrollToPage(selectedTabIndex)
-    }
+//    LaunchedEffect(selectedTabIndex) {
+//        pagerState.animateScrollToPage(selectedTabIndex)
+//    }
+//
+//    LaunchedEffect(pagerState.currentPage) {
+//        selectedTabIndex = pagerState.currentPage
+//        mainViewModel.setSelectedMainScreenTabIndex(pagerState.currentPage)
+//    }
+
+    //TODO: test
+    val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(pagerState.currentPage) {
-        selectedTabIndex = pagerState.currentPage
-        mainViewModel.setSelectedMainScreenTabIndex(pagerState.currentPage)
+        if (selectedTabIndex != pagerState.currentPage) {
+            selectedTabIndex = pagerState.currentPage
+            mainViewModel.setSelectedMainScreenTabIndex(pagerState.currentPage)
+        }
+    }
+
+    LaunchedEffect(selectedTabIndex) {
+        if (selectedTabIndex != pagerState.currentPage) {
+            coroutineScope.launch {
+                pagerState.animateScrollToPage(selectedTabIndex)
+            }
+        }
     }
 
     Column(
@@ -148,6 +168,7 @@ fun MainScreen(
                             },
                             itemContent = { itemIndex ->
                                 CardItemTrailer(
+                                    mainViewModel = mainViewModel,
                                     trailerImgID = trailersImgTitleList[itemIndex].first,
                                     movieTitleID = trailersImgTitleList[itemIndex].second,
                                     itemIndex = itemIndex,

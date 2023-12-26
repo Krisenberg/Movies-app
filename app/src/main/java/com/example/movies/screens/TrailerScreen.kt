@@ -1,6 +1,7 @@
 package com.example.movies.screens
 
 
+import android.content.res.Configuration
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
@@ -36,6 +37,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -61,6 +64,7 @@ import com.example.movies.R
 
 @Composable
 fun CardItemTrailer(
+    mainViewModel: MainViewModel,
     trailerImgID: Int,
     movieTitleID: Int,
     itemIndex: Int,
@@ -84,6 +88,7 @@ fun CardItemTrailer(
         ),
     ) {
         CardItemTrailerContent(
+            mainViewModel = mainViewModel,
             trailerImgID = trailerImgID,
             movieTitleID = movieTitleID,
             itemIndex = itemIndex,
@@ -97,6 +102,7 @@ fun CardItemTrailer(
 
 @Composable
 fun CardItemTrailerContent(
+    mainViewModel: MainViewModel,
     trailerImgID: Int,
     movieTitleID: Int,
     itemIndex: Int,
@@ -169,6 +175,7 @@ fun CardItemTrailerContent(
                         .fillMaxWidth(0.5f)
                         .height(50.dp)
                         .clickable {
+                            mainViewModel.setLastPlayedTrailerID(-1)
                             onShowDialogChange()
                             onShowDialogTrailerIDChange(itemIndex)
                         }
@@ -191,6 +198,7 @@ fun CardItemTrailerContent(
                         .fillMaxWidth(1f)
                         .height(50.dp)
                         .clickable {
+                            mainViewModel.setLastPlayedTrailerID(-1)
                             navController.navigate(route = "FullscreenTrailerScreen/$itemIndex")
                         }
                         .border(BorderStroke(1.dp, Color.LightGray), RoundedCornerShape(18.dp)),
@@ -218,9 +226,31 @@ fun ZoomedTrailerDialog(
     trailerID: Int,
     onDismissRequest: () -> Unit,
 ) {
+    val orient = LocalConfiguration.current.orientation
+
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner) {
+//        val observer = LifecycleEventObserver { _, event ->
+//            lifecycle = event
+//        }
+//        lifecycleOwner.lifecycle.addObserver(observer)
+
+        onDispose {
+//            mainViewModel.player.pause()
+            mainViewModel.setLastPlayedTrailerOrientation(orient)
+            mainViewModel.setLastPlayedTrailerPosition(mainViewModel.player.currentPosition)
+            mainViewModel.setLastPlayedTrailerID(mainViewModel.player.currentMediaItemIndex)
+//            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
+
+
     Dialog(
             onDismissRequest = {
                 onDismissRequest()
+                mainViewModel.setLastPlayedTrailerOrientation(orient)
+                mainViewModel.setLastPlayedTrailerPosition(mainViewModel.player.currentPosition)
+                mainViewModel.setLastPlayedTrailerID(mainViewModel.player.currentMediaItemIndex)
             },
             properties = DialogProperties().let {
                 DialogProperties(
@@ -236,10 +266,16 @@ fun ZoomedTrailerDialog(
             factory = { context ->
                 PlayerView(context).also {
                     it.player = mainViewModel.player
-                    (it.player as ExoPlayer).seekTo(trailerID,0)
                     it.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
                     it.useController = true
                     (it.player as ExoPlayer).playWhenReady = true
+
+                    var playerPos: Long = 0
+                    if (mainViewModel.getLastPlayedTrailerOrientation() != orient)
+                        playerPos = mainViewModel.getLastPlayedTrailerPosition()
+
+                    var mediaItemIndex = if (mainViewModel.getLastPlayedTrailerID() == -1) trailerID else mainViewModel.getLastPlayedTrailerID()
+                    (it.player as ExoPlayer).seekTo(mediaItemIndex,playerPos)
                 } },
             modifier = Modifier
                 .aspectRatio(16 / 9f)
