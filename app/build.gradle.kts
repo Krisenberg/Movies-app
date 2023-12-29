@@ -1,4 +1,3 @@
-import org.jetbrains.kotlin.kapt3.base.Kapt.kapt
 import java.util.Properties
 import java.io.FileInputStream
 
@@ -17,12 +16,6 @@ android {
     compileSdk = 34
 
     signingConfigs {
-//        create("release") {
-//            storeFile = file(project.property("RELEASE_STORE_FILE")!!)
-//            storePassword = project.property("RELEASE_STORE_PASSWORD") as String
-//            keyAlias = project.property("RELEASE_KEY_ALIAS") as String
-//            keyPassword = project.property("RELEASE_KEY_PASSWORD") as String
-//        }
         create("release") {
             storeFile = file(localProperties.getProperty("RELEASE_STORE_FILE"))
             storePassword = localProperties.getProperty("RELEASE_STORE_PASSWORD")
@@ -47,7 +40,7 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = true
-            isShrinkResources = false
+            isShrinkResources = true
             signingConfig = signingConfigs["release"]
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -77,8 +70,8 @@ android {
 
 dependencies {
     implementation("com.google.android.material:material:1.11.0")
-    val nav_version = "2.7.6"
-    implementation("androidx.navigation:navigation-compose:$nav_version")
+    val navVersion = "2.7.6"
+    implementation("androidx.navigation:navigation-compose:$navVersion")
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
     implementation("androidx.activity:activity-compose:1.8.2")
@@ -98,9 +91,9 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended:1.6.0-beta03")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
 
-    val media3_version = "1.2.0"
-    implementation("androidx.media3:media3-exoplayer:$media3_version")
-    implementation("androidx.media3:media3-ui:$media3_version")
+    val media3Version = "1.2.0"
+    implementation("androidx.media3:media3-exoplayer:$media3Version")
+    implementation("androidx.media3:media3-ui:$media3Version")
 
     implementation("androidx.media3:media3-exoplayer-hls:1.2.0")
 
@@ -114,10 +107,5 @@ dependencies {
     implementation("androidx.compose.runtime:runtime-livedata:1.6.0-beta03")
 
     implementation("androidx.startup:startup-runtime:1.1.1")
-//    // Dagger - Hilt
-//    implementation ("com.google.dagger:hilt-android:2.42")
-//    kapt ("com.google.dagger:hilt-android-compiler:2.42")
-//    kapt ("androidx.hilt:hilt-compiler:1.0.0")
-//    implementation ("androidx.hilt:hilt-navigation-compose:1.0.0")
 }
 

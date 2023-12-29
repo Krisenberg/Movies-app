@@ -1,5 +1,8 @@
 package com.example.movies.screens
 
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -45,7 +48,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -77,16 +79,6 @@ fun MainScreen(
         tabItems.size
     }
 
-//    LaunchedEffect(selectedTabIndex) {
-//        pagerState.animateScrollToPage(selectedTabIndex)
-//    }
-//
-//    LaunchedEffect(pagerState.currentPage) {
-//        selectedTabIndex = pagerState.currentPage
-//        mainViewModel.setSelectedMainScreenTabIndex(pagerState.currentPage)
-//    }
-
-    //TODO: test
     val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(pagerState.currentPage) {
@@ -226,7 +218,6 @@ fun ColumnItem(
                     .width(150.dp)
                     .height(120.dp)
                     .clip(RoundedCornerShape(10.dp))
-//                    .fillMaxWidth(0.5f)
             )
             Text(
                 text = stringResource(id = movieTitleID),
@@ -238,36 +229,46 @@ fun ColumnItem(
     }
 }
 
+@Composable
+fun CardItemTrailer(
+    mainViewModel: MainViewModel,
+    trailerImgID: Int,
+    movieTitleID: Int,
+    itemIndex: Int,
+    onShowDialogChange: () -> Unit,
+    onShowDialogTrailerIDChange: (Int) -> Unit,
+    navController: NavController,
+    modifier: Modifier
+){
+    Card(
+        modifier
+            .padding(8.dp)
+            .wrapContentSize()
+            .animateContentSize(
+                animationSpec = tween(
+                    durationMillis = 200,
+                    easing = LinearOutSlowInEasing
+                )
+            ),
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White
+        ),
+    ) {
+        CardItemTrailerContent(
+            mainViewModel = mainViewModel,
+            trailerImgID = trailerImgID,
+            movieTitleID = movieTitleID,
+            itemIndex = itemIndex,
+            onShowDialogChange = onShowDialogChange,
+            onShowDialogTrailerIDChange = onShowDialogTrailerIDChange,
+            navController = navController,
+            modifier = modifier
+        )
+    }
+}
+
 data class TabItem(
     val title: String,
     val unselectedIcon: ImageVector,
     val selectedIcon: ImageVector
 )
-
-@Preview(showBackground = true)
-@Composable
-fun MoviesListPreview() {
-//    val moviesData = ContentManager.getDatabaseData()
-//    val imagesList = moviesData.map { it.trailerImage }
-//    val titlesList = moviesData.map { it.titleAbbrev }
-//    val moviesImgTitleList = imagesList.zip(titlesList)
-//    val index = 0
-//
-//    var showDialog by rememberSaveable { mutableStateOf(false) }
-//    var showDialogTrailerID by rememberSaveable { mutableIntStateOf(0) }
-//    var selectedTabIndex by remember { mutableIntStateOf(0) }
-//    var isExpandedCard by remember { mutableStateOf(true) }
-//    var expandedCardIndex by remember { mutableStateOf(0) }
-//
-//    CardItemTrailer(
-//        trailerImgID = moviesImgTitleList[index].first,
-//        movieTitleID = moviesImgTitleList[index].second,
-//        itemIndex = index,
-//        expandedState = isExpandedCard,
-//        isExpandedCardChange = { isExpandedCard = !isExpandedCard },
-//        expandedCardIndex = { newIndex -> expandedCardIndex = index},
-//        onShowDialogChange = { showDialog = true },
-//        onShowDialogTrailerIDChange = { newValue -> showDialogTrailerID = newValue },
-//        modifier = Modifier
-//    )
-}

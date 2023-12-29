@@ -206,7 +206,6 @@ fun MainImgItem(
         contentDescription = stringResource(id = R.string.dummy_desc),
         modifier = Modifier
             .fillMaxWidth(0.475f)
-            //.fillMaxHeight()
             .clip(RoundedCornerShape(4.dp))
             .clickable {
                 onShowDialogChange(true)
@@ -223,7 +222,6 @@ fun DescriptionBox(
 ){
     Box(
         modifier
-//            .fillMaxWidth()
             .fillMaxSize()
             .padding(start = 8.dp, end = 8.dp)
             .clip(RoundedCornerShape(4.dp))

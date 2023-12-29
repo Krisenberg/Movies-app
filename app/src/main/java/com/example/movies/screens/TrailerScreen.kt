@@ -1,11 +1,7 @@
 package com.example.movies.screens
 
 
-import android.content.res.Configuration
-import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -24,8 +20,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Fullscreen
 import androidx.compose.material.icons.filled.FullscreenExit
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -54,51 +48,6 @@ import androidx.navigation.NavController
 import com.example.movies.MainViewModel
 import com.example.movies.R
 
-//@androidx.annotation.OptIn(UnstableApi::class) @OptIn(ExperimentalMaterial3Api::class)
-//@Composable
-//fun TrailerScreen(
-//    navController: NavController,
-//    mainViewModel: MainViewModel,
-//    modifier: Modifier = Modifier
-//) {}
-
-@Composable
-fun CardItemTrailer(
-    mainViewModel: MainViewModel,
-    trailerImgID: Int,
-    movieTitleID: Int,
-    itemIndex: Int,
-    onShowDialogChange: () -> Unit,
-    onShowDialogTrailerIDChange: (Int) -> Unit,
-    navController: NavController,
-    modifier: Modifier
-){
-    Card(
-        modifier
-            .padding(8.dp)
-            .wrapContentSize()
-            .animateContentSize(
-                animationSpec = tween(
-                    durationMillis = 200,
-                    easing = LinearOutSlowInEasing
-                )
-            ),
-        colors = CardDefaults.cardColors(
-            containerColor = Color.White
-        ),
-    ) {
-        CardItemTrailerContent(
-            mainViewModel = mainViewModel,
-            trailerImgID = trailerImgID,
-            movieTitleID = movieTitleID,
-            itemIndex = itemIndex,
-            onShowDialogChange = onShowDialogChange,
-            onShowDialogTrailerIDChange = onShowDialogTrailerIDChange,
-            navController = navController,
-            modifier = modifier
-        )
-    }
-}
 
 @Composable
 fun CardItemTrailerContent(
@@ -137,9 +86,6 @@ fun CardItemTrailerContent(
                     .width(150.dp)
                     .height(120.dp)
                     .clip(RoundedCornerShape(16.dp)),
-//                    .clip(RoundedCornerShape(10.dp)),
-//                contentScale = ContentScale.Crop
-                //.size(width = 172.dp, height = 97.dp)
             )
             Text(
                 text = stringResource(id = movieTitleID),
@@ -230,17 +176,11 @@ fun ZoomedTrailerDialog(
 
     val lifecycleOwner = LocalLifecycleOwner.current
     DisposableEffect(lifecycleOwner) {
-//        val observer = LifecycleEventObserver { _, event ->
-//            lifecycle = event
-//        }
-//        lifecycleOwner.lifecycle.addObserver(observer)
 
         onDispose {
-//            mainViewModel.player.pause()
             mainViewModel.setLastPlayedTrailerOrientation(orient)
             mainViewModel.setLastPlayedTrailerPosition(mainViewModel.player.currentPosition)
             mainViewModel.setLastPlayedTrailerID(mainViewModel.player.currentMediaItemIndex)
-//            lifecycleOwner.lifecycle.removeObserver(observer)
         }
     }
 
@@ -271,10 +211,10 @@ fun ZoomedTrailerDialog(
                     (it.player as ExoPlayer).playWhenReady = true
 
                     var playerPos: Long = 0
-                    if (mainViewModel.getLastPlayedTrailerOrientation() != orient)
+                    if (mainViewModel.getLastPlayedTrailerID() != -1 && mainViewModel.getLastPlayedTrailerOrientation() != orient)
                         playerPos = mainViewModel.getLastPlayedTrailerPosition()
 
-                    var mediaItemIndex = if (mainViewModel.getLastPlayedTrailerID() == -1) trailerID else mainViewModel.getLastPlayedTrailerID()
+                    val mediaItemIndex = if (mainViewModel.getLastPlayedTrailerID() == -1) trailerID else mainViewModel.getLastPlayedTrailerID()
                     (it.player as ExoPlayer).seekTo(mediaItemIndex,playerPos)
                 } },
             modifier = Modifier
